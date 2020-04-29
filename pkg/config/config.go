@@ -23,3 +23,19 @@ func New(name, version, commit, date, buildSource string, debuggingFlag bool) (*
 		BuildSource: "",
 	}, nil
 }
+
+func (c *Config) GetDebug() bool {
+	return c.Debug
+}
+
+func (c *Config) GetVersion() string {
+	return c.Version
+}
+
+func (c *Config) GetCommit() string {
+	return c.Commit
+}
+
+func (c *Config) GetBuildDate() string {
+	return c.BuildDate
+}

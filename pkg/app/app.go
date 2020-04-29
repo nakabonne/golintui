@@ -15,16 +15,16 @@ type App struct {
 	Config *config.Config
 	Log    *logrus.Entry
 	Gui    *gui.Gui
-	//Tr            *i18n.Localizer
-	//Updater       *updates.Updater // may only need this on the Gui
-	//ClientContext string
+	// Tr            *i18n.Localizer
+	// Updater       *updates.Updater // may only need this on the Gui
+	// ClientContext string
 }
 
 func New(conf *config.Config) (*App, error) {
 	return &App{
-		closers: nil,
+		closers: []io.Closer{},
 		Config:  conf,
-		Log:     nil,
+		Log:     newLogger(conf),
 		Gui:     nil,
 	}, nil
 }
