@@ -1,10 +1,13 @@
 package gui
 
-import "github.com/rivo/tview"
+import (
+	"github.com/rivo/tview"
+
+	"github.com/nakabonne/golintui/pkg/gui/box"
+)
 
 type Gui struct {
 	application *tview.Application
-	//checkbox    *tview.Checkbox
 }
 
 func New() *Gui {
@@ -24,29 +27,22 @@ func (g *Gui) Run() error {
 func (g *Gui) initPrimitive() {
 	newPrimitive := func(text string) tview.Primitive {
 		return tview.NewTextView().
-			SetTextAlign(tview.AlignCenter).
-			SetText(text)
+			SetTitleAlign(tview.AlignLeft).
+			SetTitle(text)
 	}
-	menu := newPrimitive("Menu")
-	main := newPrimitive("Main content")
-	sideBar := newPrimitive("Side Bar")
+	targets := newPrimitive("Targets")
+	results := newPrimitive("Results")
 
 	grid := tview.NewGrid().
-		SetRows(3, 0, 3).
-		SetColumns(30, 0, 30).
+		SetRows(2, 0, 0).
+		SetColumns(0, 0).
 		SetBorders(true).
-		AddItem(newPrimitive("Header"), 0, 0, 1, 3, 0, 0, false).
-		AddItem(newPrimitive("Footer"), 2, 0, 1, 3, 0, 0, false)
-
-	// Layout for screens narrower than 100 cells (menu and side bar are hidden).
-	grid.AddItem(menu, 0, 0, 0, 0, 0, 0, false).
-		AddItem(main, 1, 0, 1, 3, 0, 0, false).
-		AddItem(sideBar, 0, 0, 0, 0, 0, 0, false)
+		AddItem(newPrimitive("Info"), 0, 0, 1, 1, 0, 0, true)
 
 	// Layout for screens wider than 100 cells.
-	grid.AddItem(menu, 1, 0, 1, 1, 0, 100, false).
-		AddItem(main, 1, 1, 1, 1, 0, 100, false).
-		AddItem(sideBar, 1, 2, 1, 1, 0, 100, false)
+	grid.AddItem(box.NewLintersBox(), 1, 0, 1, 1, 0, 100, true).
+		AddItem(targets, 2, 0, 1, 1, 0, 100, true).
+		AddItem(results, 0, 1, 3, 1, 0, 100, true)
 
 	g.application.SetRoot(grid, true)
 }
