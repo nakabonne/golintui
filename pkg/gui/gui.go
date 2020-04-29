@@ -3,11 +3,12 @@ package gui
 import (
 	"github.com/rivo/tview"
 
-	"github.com/nakabonne/golintui/pkg/gui/box"
+	"github.com/nakabonne/golintui/pkg/gui/item"
 )
 
 type Gui struct {
 	application *tview.Application
+	pages       *tview.Pages
 }
 
 func New() *Gui {
@@ -19,6 +20,7 @@ func New() *Gui {
 func (g *Gui) Run() error {
 	g.initPrimitive()
 	if err := g.application.Run(); err != nil {
+		g.application.Stop()
 		return err
 	}
 	return nil
@@ -29,12 +31,14 @@ func (g *Gui) initPrimitive() {
 		SetRows(2, 0, 0).
 		SetColumns(0, 0).
 		SetBorders(true).
-		AddItem(box.NewInfoBox(), 0, 0, 1, 1, 0, 0, false)
+		AddItem(item.NewInfo(), 0, 0, 1, 1, 0, 0, false)
 
 	// Layout for screens wider than 100 cells.
-	grid.AddItem(box.NewLintersBox(), 1, 0, 1, 1, 0, 100, false).
-		AddItem(box.NewTargetsBox(), 2, 0, 1, 1, 0, 100, false).
-		AddItem(box.NewResultsBox(), 0, 1, 3, 1, 0, 100, false)
+	grid.AddItem(item.NewLinters(), 1, 0, 1, 1, 0, 100, true).
+		AddItem(item.NewSourceFiles(), 2, 0, 1, 1, 0, 100, false).
+		AddItem(item.NewResults(), 0, 1, 3, 1, 0, 100, false)
 
-	g.application.SetRoot(grid, true)
+	g.pages = tview.NewPages().
+		AddAndSwitchToPage("main", grid, true)
+	g.application.SetRoot(g.pages, true)
 }

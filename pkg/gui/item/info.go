@@ -1,13 +1,13 @@
-package box
+package item
 
 import "github.com/rivo/tview"
 
-type InfoBox struct {
+type Info struct {
 	*tview.TextView
 }
 
-func NewInfoBox() *InfoBox {
-	b := &InfoBox{
+func NewInfo() *Info {
+	b := &Info{
 		TextView: tview.NewTextView(),
 	}
 	b.SetText("golangci-lint version: 1.25.0").
