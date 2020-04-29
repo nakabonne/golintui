@@ -30,7 +30,6 @@ func (g *Gui) initPrimitive() {
 			SetTitleAlign(tview.AlignLeft).
 			SetTitle(text)
 	}
-	results := newPrimitive("Results")
 
 	grid := tview.NewGrid().
 		SetRows(2, 0, 0).
@@ -41,7 +40,7 @@ func (g *Gui) initPrimitive() {
 	// Layout for screens wider than 100 cells.
 	grid.AddItem(box.NewLintersBox(), 1, 0, 1, 1, 0, 100, true).
 		AddItem(box.NewTargetsBox(), 2, 0, 1, 1, 0, 100, true).
-		AddItem(results, 0, 1, 3, 1, 0, 100, true)
+		AddItem(box.NewResultsBox(), 0, 1, 3, 1, 0, 100, true)
 
 	g.application.SetRoot(grid, true)
 }
