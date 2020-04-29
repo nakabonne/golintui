@@ -11,8 +11,7 @@ linters:
     - gofmt
     - goimports
     - deadcode
-    - unused
-    - nesitf
+    - nestif
     - govet
     - golint
     - prealloc
