@@ -13,7 +13,7 @@ type Config struct {
 	// IsNewRepo bool
 }
 
-func NewConfig(name, version, commit, date, buildSource string, debuggingFlag bool) (*Config, error) {
+func New(name, version, commit, date, buildSource string, debuggingFlag bool) (*Config, error) {
 	return &Config{
 		Name:        "",
 		Debug:       false,
