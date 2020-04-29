@@ -3,14 +3,17 @@ package item
 import "github.com/rivo/tview"
 
 type Linters struct {
-	*tview.Checkbox
+	*tview.Table
 }
 
 func NewLinters() *Linters {
-	b := &Linters{
-		Checkbox: tview.NewCheckbox(),
+	l := &Linters{
+		Table: tview.NewTable(),
 	}
-	b.SetLabel("golint").
-		SetBorder(true).SetTitle("Linters").SetTitleAlign(tview.AlignLeft)
-	return b
+
+	l.SetBorders(true).
+		SetSelectable(true, false).
+		SetTitle("Linters").SetTitleAlign(tview.AlignLeft)
+
+	return l
 }

@@ -10,6 +10,7 @@ func NewInfo() *Info {
 	b := &Info{
 		TextView: tview.NewTextView(),
 	}
+	// TODO: Populate real version of golangci-lint
 	b.SetText("golangci-lint version: 1.25.0").
 		SetBorder(false).
 		SetTitle("Info").SetTitleAlign(tview.AlignLeft)
