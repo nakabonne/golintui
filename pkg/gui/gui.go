@@ -25,22 +25,16 @@ func (g *Gui) Run() error {
 }
 
 func (g *Gui) initPrimitive() {
-	newPrimitive := func(text string) tview.Primitive {
-		return tview.NewTextView().
-			SetTitleAlign(tview.AlignLeft).
-			SetTitle(text)
-	}
-
 	grid := tview.NewGrid().
 		SetRows(2, 0, 0).
 		SetColumns(0, 0).
 		SetBorders(true).
-		AddItem(newPrimitive("Info"), 0, 0, 1, 1, 0, 0, true)
+		AddItem(box.NewInfoBox(), 0, 0, 1, 1, 0, 0, false)
 
 	// Layout for screens wider than 100 cells.
-	grid.AddItem(box.NewLintersBox(), 1, 0, 1, 1, 0, 100, true).
-		AddItem(box.NewTargetsBox(), 2, 0, 1, 1, 0, 100, true).
-		AddItem(box.NewResultsBox(), 0, 1, 3, 1, 0, 100, true)
+	grid.AddItem(box.NewLintersBox(), 1, 0, 1, 1, 0, 100, false).
+		AddItem(box.NewTargetsBox(), 2, 0, 1, 1, 0, 100, false).
+		AddItem(box.NewResultsBox(), 0, 1, 3, 1, 0, 100, false)
 
 	g.application.SetRoot(grid, true)
 }
