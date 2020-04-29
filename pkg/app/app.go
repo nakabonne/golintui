@@ -25,10 +25,10 @@ func New(conf *config.Config) (*App, error) {
 		closers: []io.Closer{},
 		Config:  conf,
 		Log:     newLogger(conf),
-		Gui:     nil,
+		Gui:     gui.New(),
 	}, nil
 }
 
 func (a *App) Run() error {
-	return a.Gui.RunWithSubprocesses()
+	return a.Gui.Run()
 }

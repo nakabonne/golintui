@@ -3,6 +3,7 @@ module github.com/nakabonne/golintui
 go 1.14
 
 require (
+	github.com/rivo/tview v0.0.0-20200414130344-8e06c826b3a5
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sirupsen/logrus v1.5.0
 )
