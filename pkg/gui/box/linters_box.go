@@ -7,9 +7,9 @@ type LintersBox struct {
 }
 
 func NewLintersBox() *LintersBox {
-	l := &LintersBox{
+	b := &LintersBox{
 		Checkbox: tview.NewCheckbox(),
 	}
-	l.SetBorder(true).SetTitle("Linters").SetTitleAlign(tview.AlignLeft)
-	return l
+	b.SetBorder(true).SetTitle("Linters").SetTitleAlign(tview.AlignLeft)
+	return b
 }
