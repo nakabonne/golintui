@@ -1,7 +1,6 @@
 package item
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
@@ -32,20 +31,14 @@ func NewSourceFiles(rootDir string) *SourceFiles {
 	return s
 }
 
-func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
-	// TODO: Be sure to buffer the selected directories instead of switching toggle.
-	s.SetSelectedFunc(s.SwitchToggle)
+func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectedFunc func(node *tview.TreeNode)) {
+	s.SetSelectedFunc(selectedFunc)
 
 	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		node := s.GetCurrentNode()
 		switch event.Rune() {
-		case 'l':
-			// TODO: Expand toggle
-			if ref := node.GetReference(); ref != nil {
-				fmt.Println(ref)
-			}
-		case 'h':
-			// TODO: Collapse toggle
+		case 'o':
+			s.SwitchToggle(node)
 		}
 		globalKeybind(event)
 		return event

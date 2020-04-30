@@ -1,7 +1,11 @@
 package gui
 
 import (
+	"fmt"
+
 	"github.com/rivo/tview"
+
+	"github.com/nakabonne/golintui/pkg/golangcilint"
 
 	"github.com/nakabonne/golintui/pkg/gui/item"
 )
@@ -14,6 +18,8 @@ type Gui struct {
 	sourceFilesItem *item.SourceFiles
 	resultsItem     *item.Results
 	infoItem        *item.Info
+
+	runner *golangcilint.Runner
 }
 
 func New() *Gui {
@@ -23,6 +29,7 @@ func New() *Gui {
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
 		infoItem:        item.NewInfo(),
+		runner:          golangcilint.NewRunner([]string{}),
 	}
 }
 
@@ -52,4 +59,12 @@ func (g *Gui) initGrid() {
 	g.pages = tview.NewPages().
 		AddAndSwitchToPage("main", grid, true)
 	g.application.SetRoot(g.pages, true)
+}
+
+// RegisterArgs adds path to golangci-lint runner as an arg.
+func (s *Gui) registerPath(node *tview.TreeNode) {
+	// TODO: implement
+	if ref := node.GetReference(); ref != nil {
+		fmt.Println(ref)
+	}
 }

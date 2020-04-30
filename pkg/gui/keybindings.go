@@ -3,7 +3,7 @@ package gui
 import "github.com/gdamore/tcell"
 
 func (g *Gui) setKeybind() {
-	g.sourceFilesItem.SetKeybinds(g.grobalKeybind)
+	g.sourceFilesItem.SetKeybinds(g.grobalKeybind, g.registerPath)
 }
 
 func (g *Gui) grobalKeybind(event *tcell.EventKey) {
