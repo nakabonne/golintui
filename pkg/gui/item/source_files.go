@@ -26,7 +26,9 @@ func NewSourceFiles(rootDir string) *SourceFiles {
 		SetTitle("Source Files").
 		SetTitleAlign(tview.AlignLeft)
 
-	s.addChildren(root, rootDir)
+	if err := s.addChildren(root, rootDir); err != nil {
+		panic(err) // TODO: Emit log instead of panic
+	}
 	return s
 }
 
@@ -80,7 +82,9 @@ func (s *SourceFiles) SwitchToggle(node *tview.TreeNode) {
 	if len(children) == 0 {
 		// Load and show files in this directory.
 		path := reference.(string)
-		s.addChildren(node, path)
+		if err := s.addChildren(node, path); err != nil {
+			panic(err) // TODO: Emit log instead of panic
+		}
 	} else {
 		// Collapse if visible, expand if collapsed.
 		node.SetExpanded(!node.IsExpanded())
