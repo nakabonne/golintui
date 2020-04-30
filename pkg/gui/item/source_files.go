@@ -39,13 +39,11 @@ func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
 	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		node := s.GetCurrentNode()
 		switch event.Rune() {
-		case 'r':
-			// TODO: Run linters against the directories marked as selected.
+		case 'l':
+			// TODO: Expand toggle
 			if ref := node.GetReference(); ref != nil {
 				fmt.Println(ref)
 			}
-		case 'l':
-			// TODO: Expand toggle
 		case 'h':
 			// TODO: Collapse toggle
 		}
