@@ -62,9 +62,12 @@ func (g *Gui) initGrid() {
 }
 
 // RegisterArgs adds path to golangci-lint runner as an arg.
-func (s *Gui) registerPath(node *tview.TreeNode) {
-	// TODO: implement
-	if ref := node.GetReference(); ref != nil {
-		fmt.Println(ref)
+func (g *Gui) registerPath(node *tview.TreeNode) {
+	switch ref := node.GetReference().(type) {
+	case nil:
+		return
+	case string:
+		g.runner.AddArgs(ref)
+		fmt.Println("args:", g.runner.Args)
 	}
 }
