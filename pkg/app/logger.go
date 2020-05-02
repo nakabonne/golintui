@@ -3,9 +3,9 @@ package app
 import (
 	"io/ioutil"
 	"os"
-	"path/filepath"
 
-	"github.com/shibukawa/configdir"
+	"github.com/k0kubun/pp"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/nakabonne/golintui/pkg/config"
@@ -13,7 +13,7 @@ import (
 
 func newLogger(conf *config.Config) *logrus.Entry {
 	var log *logrus.Logger
-	if conf.GetDebug() || os.Getenv("DEBUG") == "TRUE" {
+	if conf.GetDebug() {
 		log = newDevelopmentLogger()
 	} else {
 		log = newProductionLogger()
@@ -31,12 +31,13 @@ func newLogger(conf *config.Config) *logrus.Entry {
 
 func newDevelopmentLogger() *logrus.Logger {
 	log := logrus.New()
-	log.SetLevel(getLogLevel())
-	file, err := os.OpenFile(filepath.Join(globalConfigDir(), "development.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	log.SetLevel(logrus.TraceLevel)
+	file, err := os.OpenFile("development.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic("unable to log to file") // TODO: don't panic (also, remove this call to the `panic` function)
 	}
 	log.SetOutput(file)
+	pp.SetDefaultOutput(log.Out)
 	return log
 }
 
@@ -45,19 +46,4 @@ func newProductionLogger() *logrus.Logger {
 	log.Out = ioutil.Discard
 	log.SetLevel(logrus.ErrorLevel)
 	return log
-}
-
-func getLogLevel() logrus.Level {
-	strLevel := os.Getenv("LOG_LEVEL")
-	level, err := logrus.ParseLevel(strLevel)
-	if err != nil {
-		return logrus.DebugLevel
-	}
-	return level
-}
-
-func globalConfigDir() string {
-	configDirs := configdir.New("nakabonne", "golintui")
-	configDir := configDirs.QueryFolders(configdir.Global)[0]
-	return configDir.Path
 }

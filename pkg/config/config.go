@@ -24,7 +24,7 @@ func New(name, version, commit, date, buildSource, executable string, debuggingF
 	}
 	return &Config{
 		Name:        "",
-		Debug:       false,
+		Debug:       true,
 		Version:     "",
 		Commit:      "",
 		BuildDate:   "",
