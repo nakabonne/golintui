@@ -31,7 +31,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner) *Gui {
 		lintersItem:     item.NewLinters(),
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
-		infoItem:        item.NewInfo(runner.GetVersion()),
+		infoItem:        item.NewInfo(runner.GetVersion()), // TODO: Run GetVersion() concurrency
 		runner:          runner,
 		logger:          logger,
 	}
