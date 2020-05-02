@@ -64,6 +64,7 @@ func (r *Runner) ListLinters() []Linter {
 	//   And then fetch linters from Report.Linters.
 	return []Linter{}
 }
+
 func (r *Runner) GetVersion() string {
 	version, err := r.execute("version")
 	if err != nil {
@@ -76,5 +77,5 @@ func (r *Runner) GetVersion() string {
 func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd := exec.Command(r.Executable, args...)
 	cmd.Dir = r.dir
-	return cmd.CombinedOutput()
+	return cmd.Output()
 }
