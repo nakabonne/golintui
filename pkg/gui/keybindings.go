@@ -2,7 +2,6 @@ package gui
 
 import (
 	"github.com/gdamore/tcell"
-	"github.com/k0kubun/pp"
 )
 
 func (g *Gui) setKeybind() {
@@ -14,12 +13,11 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 	case 'q':
 		g.application.Stop()
 	case 'r':
-		// TODO: Run golangci-lint against the directories marked as selected.
 		issues, err := g.runner.Run()
 		if err != nil {
 			g.logger.Error(err.Error())
 			return
 		}
-		pp.Println(issues)
+		g.resultsItem.ShowLatest(issues)
 	}
 }
