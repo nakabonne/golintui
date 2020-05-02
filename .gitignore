@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+golintui
 
 # Test binary, built with `go test -c`
 *.test
@@ -17,4 +18,5 @@
 # IDE settings
 *.idea
 
+# log file for debugging
 development.log
