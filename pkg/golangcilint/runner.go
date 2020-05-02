@@ -2,7 +2,10 @@ package golangcilint
 
 import (
 	"encoding/json"
+	"fmt"
 	"os/exec"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/golangci/golangci-lint/pkg/printers"
 
@@ -21,16 +24,18 @@ type Runner struct {
 	Config *config.Config
 
 	// dir specifies the working directory.
-	dir string
+	dir    string
+	logger *logrus.Entry
 }
 
-func NewRunner(executable string, args []string) *Runner {
+func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
 	// TODO: Automatically read config from golangci settings file.
 	return &Runner{
 		Executable: executable,
 		Args:       args,
 		Config:     &config.Config{},
 		dir:        ".",
+		logger:     logger,
 	}
 }
 
@@ -39,9 +44,11 @@ func (r *Runner) AddArgs(arg string) {
 }
 
 // Run executes `golangci-lint run` with its own args and configuration.
-func (r *Runner) Run(arg string) ([]Issue, error) {
-	outJSON, err := r.execute("run", true, r.Args...)
+func (r *Runner) Run() ([]Issue, error) {
+	outJSON, err := r.execute(append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, r.Args...)...)
 	if err != nil {
+		fmt.Println("outJSON:", string(outJSON), "err:", err)
+		r.logger.Error("failed to run golangci-lint run", outJSON, err)
 		return nil, err
 	}
 
@@ -57,11 +64,16 @@ func (r *Runner) ListLinters() []Linter {
 	//   And then fetch linters from Report.Linters.
 	return []Linter{}
 }
-
-func (r *Runner) execute(subCommand string, outJSON bool, args ...string) ([]byte, error) {
-	if outJSON {
-		args = append(args, "--out-format=json")
+func (r *Runner) GetVersion() string {
+	version, err := r.execute("version")
+	if err != nil {
+		r.logger.Error(err)
+		return ""
 	}
+	return string(version)
+}
+
+func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd := exec.Command(r.Executable, args...)
 	cmd.Dir = r.dir
 	return cmd.CombinedOutput()

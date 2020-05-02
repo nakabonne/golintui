@@ -3,6 +3,8 @@ package gui
 import (
 	"fmt"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/golangcilint"
@@ -20,16 +22,18 @@ type Gui struct {
 	infoItem        *item.Info
 
 	runner *golangcilint.Runner
+	logger *logrus.Entry
 }
 
-func New(runner *golangcilint.Runner) *Gui {
+func New(logger *logrus.Entry, runner *golangcilint.Runner) *Gui {
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(),
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
-		infoItem:        item.NewInfo(),
+		infoItem:        item.NewInfo(runner.GetVersion()),
 		runner:          runner,
+		logger:          logger,
 	}
 }
 

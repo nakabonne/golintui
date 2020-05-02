@@ -39,6 +39,7 @@ func newDevelopmentLogger() *logrus.Logger {
 	log.SetOutput(file)
 	return log
 }
+
 func newProductionLogger() *logrus.Logger {
 	log := logrus.New()
 	log.Out = ioutil.Discard

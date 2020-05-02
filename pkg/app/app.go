@@ -22,12 +22,13 @@ type App struct {
 }
 
 func New(conf *config.Config) (*App, error) {
-	runner := golangcilint.NewRunner(conf.Executable, []string{})
+	logger := newLogger(conf)
+	runner := golangcilint.NewRunner(conf.Executable, []string{}, logger)
 	return &App{
 		closers: []io.Closer{},
 		Config:  conf,
-		Log:     newLogger(conf),
-		Gui:     gui.New(runner),
+		Log:     logger,
+		Gui:     gui.New(logger, runner),
 	}, nil
 }
 
