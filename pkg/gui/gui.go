@@ -80,3 +80,7 @@ func (g *Gui) registerPath(node *tview.TreeNode) {
 func (g *Gui) switchPanel(p tview.Primitive) {
 	g.application.SetFocus(p)
 }
+
+func (g *Gui) openFile(filepagh string) error {
+	return nil
+}

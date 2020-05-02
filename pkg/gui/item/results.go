@@ -2,6 +2,7 @@ package item
 
 import (
 	"github.com/gdamore/tcell"
+	"github.com/k0kubun/pp"
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/golangcilint"
@@ -19,12 +20,19 @@ func NewResults() *Results {
 	return b
 }
 
-func (s *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
-	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		node := s.GetCurrentNode()
+func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFile func(string) error) {
+	r.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		node := r.GetCurrentNode()
 		switch event.Rune() {
 		case 'o':
-			node.SetExpanded(!node.IsExpanded())
+			switch ref := node.GetReference().(type) {
+			case golangcilint.Issue:
+				if err := openFile(ref.FilePath()); err != nil {
+					pp.Println(err) // TODO: Replace with logrus
+				}
+			case string:
+				node.SetExpanded(!node.IsExpanded())
+			}
 		}
 		globalKeybind(event)
 		return event

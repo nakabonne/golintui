@@ -19,15 +19,20 @@ func NewIssues(issues []result.Issue) []Issue {
 	return res
 }
 
-func (i *Issue) FromLinter() string {
-	return i.issue.FromLinter
-}
-
 func (i *Issue) Message() string {
+	// TODO: Append Replacement as well.
 	return fmt.Sprintf("%s:%d:%d: %s",
 		i.issue.FilePath(),
 		i.issue.Line(),
 		i.issue.Column(),
 		i.issue.Text,
 	)
+}
+
+func (i *Issue) FromLinter() string {
+	return i.issue.FromLinter
+}
+
+func (i *Issue) FilePath() string {
+	return i.issue.FilePath()
 }
