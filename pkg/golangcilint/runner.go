@@ -77,5 +77,5 @@ func (r *Runner) GetVersion() string {
 func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd := exec.Command(r.Executable, args...)
 	cmd.Dir = r.dir
-	return cmd.Output()
+	return cmd.CombinedOutput()
 }
