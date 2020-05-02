@@ -22,7 +22,7 @@ func NewResults() *Results {
 // ShowLatest updates its own tree view and lists the latest execution results.
 func (r *Results) ShowLatest(issues []golangcilint.Issue) {
 	root := tview.NewTreeNode("Issues").
-		SetColor(tcell.ColorYellow)
+		SetColor(tcell.ColorWhite)
 
 	r.SetRoot(root).
 		SetCurrentNode(root)
@@ -41,7 +41,7 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 		child := tview.NewTreeNode(linter).
 			SetText("from " + linter).
 			SetSelectable(true).
-			SetColor(tcell.ColorGreen)
+			SetColor(tcell.ColorAqua)
 		node.AddChild(child)
 	}
 }

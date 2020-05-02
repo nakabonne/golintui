@@ -18,7 +18,7 @@ func NewSourceFiles(rootDir string) *SourceFiles {
 	}
 
 	root := tview.NewTreeNode(rootDir).
-		SetColor(tcell.ColorRed)
+		SetColor(tcell.ColorWhite)
 	s.SetRoot(root).
 		SetCurrentNode(root).
 		SetBorder(true).
@@ -56,7 +56,7 @@ func (s *SourceFiles) addChildren(node *tview.TreeNode, path string) error {
 			SetReference(filepath.Join(path, file.Name())).
 			SetSelectable(file.IsDir())
 		if file.IsDir() {
-			child.SetColor(tcell.ColorGreen)
+			child.SetColor(tcell.ColorAqua)
 		}
 		node.AddChild(child)
 	}
