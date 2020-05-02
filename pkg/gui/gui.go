@@ -75,3 +75,8 @@ func (g *Gui) registerPath(node *tview.TreeNode) {
 		fmt.Println("args:", g.runner.Args)
 	}
 }
+
+// switchPanel switches to focus on the given Primitive.
+func (g *Gui) switchPanel(p tview.Primitive) {
+	g.application.SetFocus(g.resultsItem)
+}

@@ -54,5 +54,6 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 				SetColor(tcell.ColorWhite)
 			child.AddChild(grandchild)
 		}
+		child.SetExpanded(false)
 	}
 }

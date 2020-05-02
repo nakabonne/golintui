@@ -19,5 +19,6 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 			return
 		}
 		g.resultsItem.ShowLatest(issues)
+		g.switchPanel(g.resultsItem)
 	}
 }
