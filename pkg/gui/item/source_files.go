@@ -8,6 +8,11 @@ import (
 	"github.com/rivo/tview"
 )
 
+const (
+	DefaultDirColor  = tcell.ColorAqua
+	SelectedDirColor = tcell.ColorYellow
+)
+
 type SourceFiles struct {
 	*tview.TreeView
 }
@@ -56,7 +61,7 @@ func (s *SourceFiles) addChildren(node *tview.TreeNode, path string) error {
 			SetReference(filepath.Join(path, file.Name())).
 			SetSelectable(file.IsDir())
 		if file.IsDir() {
-			child.SetColor(tcell.ColorAqua)
+			child.SetColor(DefaultDirColor)
 		}
 		node.AddChild(child)
 	}

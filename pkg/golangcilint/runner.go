@@ -42,6 +42,15 @@ func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
 func (r *Runner) AddArgs(arg string) {
 	r.Args = append(r.Args, arg+globOperator)
 }
+func (r *Runner) RemoveArgs(arg string) {
+	args := make([]string, 0, len(r.Args)-1)
+	for _, a := range r.Args {
+		if a != arg+globOperator {
+			args = append(args, a)
+		}
+	}
+	r.Args = args
+}
 
 // Run executes `golangci-lint run` with its own args and configuration.
 func (r *Runner) Run() ([]Issue, error) {

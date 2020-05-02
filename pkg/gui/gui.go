@@ -1,8 +1,6 @@
 package gui
 
 import (
-	"fmt"
-
 	"github.com/sirupsen/logrus"
 
 	"github.com/rivo/tview"
@@ -71,8 +69,14 @@ func (g *Gui) registerPath(node *tview.TreeNode) {
 	case nil:
 		return
 	case string:
+		// Remove args if selected.
+		if node.GetColor() == item.SelectedDirColor {
+			g.runner.RemoveArgs(ref)
+			node.SetColor(item.DefaultDirColor)
+			return
+		}
 		g.runner.AddArgs(ref)
-		fmt.Println("args:", g.runner.Args)
+		node.SetColor(item.SelectedDirColor)
 	}
 }
 
