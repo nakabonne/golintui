@@ -38,10 +38,21 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 	}
 
 	for linter := range linterIssues {
-		child := tview.NewTreeNode(linter).
-			SetText("from " + linter).
+		// Add a reporting linter to root as children.
+		child := tview.NewTreeNode("reported by " + linter).
+			SetReference(linter).
 			SetSelectable(true).
 			SetColor(tcell.ColorAqua)
 		node.AddChild(child)
+
+		// Add issues to reporting linters as children.
+		issues := linterIssues[linter]
+		for _, i := range issues {
+			grandchild := tview.NewTreeNode(i.Message()).
+				SetReference(i).
+				SetSelectable(true).
+				SetColor(tcell.ColorWhite)
+			child.AddChild(grandchild)
+		}
 	}
 }
