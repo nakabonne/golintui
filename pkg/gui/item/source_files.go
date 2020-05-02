@@ -46,19 +46,19 @@ func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), sel
 }
 
 // AddChildren adds child nodes to the given node which represents a directory.
-func (s *SourceFiles) addChildren(target *tview.TreeNode, path string) error {
+func (s *SourceFiles) addChildren(node *tview.TreeNode, path string) error {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return err
 	}
 	for _, file := range files {
-		node := tview.NewTreeNode(file.Name()).
+		child := tview.NewTreeNode(file.Name()).
 			SetReference(filepath.Join(path, file.Name())).
 			SetSelectable(file.IsDir())
 		if file.IsDir() {
-			node.SetColor(tcell.ColorGreen)
+			child.SetColor(tcell.ColorGreen)
 		}
-		target.AddChild(node)
+		node.AddChild(child)
 	}
 	return nil
 }
