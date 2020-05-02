@@ -5,7 +5,7 @@ import (
 )
 
 func (g *Gui) setKeybind() {
-	g.sourceFilesItem.SetKeybinds(g.grobalKeybind, g.registerPath)
+	g.sourceFilesItem.SetKeybinds(g.grobalKeybind, g.registerPath, g.unregisterPath)
 	g.resultsItem.SetKeybinds(g.grobalKeybind, g.openFile)
 }
 

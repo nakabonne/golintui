@@ -63,21 +63,15 @@ func (g *Gui) initGrid() {
 	g.application.SetRoot(g.pages, true)
 }
 
-// RegisterArgs adds path to golangci-lint runner as an arg.
-func (g *Gui) registerPath(node *tview.TreeNode) {
-	switch ref := node.GetReference().(type) {
-	case nil:
-		return
-	case string:
-		// Remove args if selected.
-		if node.GetColor() == item.SelectedDirColor {
-			g.runner.RemoveArgs(ref)
-			node.SetColor(item.DefaultDirColor)
-			return
-		}
-		g.runner.AddArgs(ref)
-		node.SetColor(item.SelectedDirColor)
-	}
+// registerPath adds path to golangci-lint runner as an arg.
+func (g *Gui) registerPath(node *tview.TreeNode, path string) {
+	g.runner.AddArgs(path)
+	node.SetColor(item.SelectedDirColor)
+}
+
+func (g *Gui) unregisterPath(node *tview.TreeNode, path string) {
+	g.runner.RemoveArgs(path)
+	node.SetColor(item.DefaultDirColor)
 }
 
 // switchPanel switches to focus on the given Primitive.

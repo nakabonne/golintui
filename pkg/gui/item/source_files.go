@@ -36,8 +36,18 @@ func NewSourceFiles(rootDir string) *SourceFiles {
 	return s
 }
 
-func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectedFunc func(node *tview.TreeNode)) {
-	s.SetSelectedFunc(selectedFunc)
+func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction func(node *tview.TreeNode, path string), unselectAction func(node *tview.TreeNode, path string)) {
+	s.SetSelectedFunc(func(node *tview.TreeNode) {
+		ref, ok := node.GetReference().(string)
+		if !ok {
+			return
+		}
+		if node.GetColor() == SelectedDirColor {
+			unselectAction(node, ref)
+		} else {
+			selectAction(node, ref)
+		}
+	})
 
 	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		node := s.GetCurrentNode()
