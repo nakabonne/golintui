@@ -19,6 +19,18 @@ func NewResults() *Results {
 	return b
 }
 
+func (s *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
+	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		node := s.GetCurrentNode()
+		switch event.Rune() {
+		case 'o':
+			node.SetExpanded(!node.IsExpanded())
+		}
+		globalKeybind(event)
+		return event
+	})
+}
+
 // ShowLatest updates its own tree view and lists the latest execution results.
 func (r *Results) ShowLatest(issues []golangcilint.Issue) {
 	root := tview.NewTreeNode("Issues").

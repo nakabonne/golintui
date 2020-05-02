@@ -6,6 +6,7 @@ import (
 
 func (g *Gui) setKeybind() {
 	g.sourceFilesItem.SetKeybinds(g.grobalKeybind, g.registerPath)
+	g.resultsItem.SetKeybinds(g.grobalKeybind)
 }
 
 func (g *Gui) grobalKeybind(event *tcell.EventKey) {
