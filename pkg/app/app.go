@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/nakabonne/golintui/pkg/config"
+	"github.com/nakabonne/golintui/pkg/golangcilint"
 	"github.com/nakabonne/golintui/pkg/gui"
 )
 
@@ -21,11 +22,12 @@ type App struct {
 }
 
 func New(conf *config.Config) (*App, error) {
+	runner := golangcilint.NewRunner(conf.Executable, []string{})
 	return &App{
 		closers: []io.Closer{},
 		Config:  conf,
 		Log:     newLogger(conf),
-		Gui:     gui.New(),
+		Gui:     gui.New(runner),
 	}, nil
 }
 

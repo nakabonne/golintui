@@ -22,14 +22,14 @@ type Gui struct {
 	runner *golangcilint.Runner
 }
 
-func New() *Gui {
+func New(runner *golangcilint.Runner) *Gui {
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(),
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
 		infoItem:        item.NewInfo(),
-		runner:          golangcilint.NewRunner([]string{}),
+		runner:          runner,
 	}
 }
 

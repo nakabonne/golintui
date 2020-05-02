@@ -1,5 +1,7 @@
 package config
 
+const defaultExecutable = "golangci-lint"
+
 // Config includes the base configuration fields required for golintui.
 type Config struct {
 	Name        string
@@ -8,12 +10,18 @@ type Config struct {
 	Commit      string
 	BuildDate   string
 	BuildSource string
+
+	// Path to a golangci-lint executable.
+	Executable string
 	// UserConfig    *viper.Viper
 	// UserConfigDir string
 	// IsNewRepo bool
 }
 
-func New(name, version, commit, date, buildSource string, debuggingFlag bool) (*Config, error) {
+func New(name, version, commit, date, buildSource, executable string, debuggingFlag bool) (*Config, error) {
+	if executable == "" {
+		executable = defaultExecutable
+	}
 	return &Config{
 		Name:        "",
 		Debug:       false,
@@ -21,6 +29,7 @@ func New(name, version, commit, date, buildSource string, debuggingFlag bool) (*
 		Commit:      "",
 		BuildDate:   "",
 		BuildSource: "",
+		Executable:  executable,
 	}, nil
 }
 

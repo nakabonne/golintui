@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// TODO: Populate
-	appConfig, err := config.New("", "", "", "", "", false)
+	appConfig, err := config.New("", "", "", "", "", "", false)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
