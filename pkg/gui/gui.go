@@ -66,6 +66,29 @@ func (g *Gui) initGrid() {
 	g.application.SetRoot(g.pages, true)
 }
 
+// TODO: Be more clear the relationship between each panel.
+func (g *Gui) nextPanel() {
+	switch g.application.GetFocus().(type) {
+	case *item.Linters:
+		g.switchPanel(g.sourceFilesItem)
+	case *item.SourceFiles:
+		g.switchPanel(g.resultsItem)
+	case *item.Results:
+		g.switchPanel(g.lintersItem)
+	}
+}
+
+func (g *Gui) prevPanel() {
+	switch g.application.GetFocus().(type) {
+	case *item.Linters:
+		g.switchPanel(g.resultsItem)
+	case *item.SourceFiles:
+		g.switchPanel(g.lintersItem)
+	case *item.Results:
+		g.switchPanel(g.sourceFilesItem)
+	}
+}
+
 // registerPath adds path to golangci-lint runner as an arg.
 func (g *Gui) registerPath(node *tview.TreeNode, path string) {
 	g.runner.AddArgs(path)

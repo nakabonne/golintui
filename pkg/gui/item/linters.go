@@ -1,6 +1,9 @@
 package item
 
-import "github.com/rivo/tview"
+import (
+	"github.com/gdamore/tcell"
+	"github.com/rivo/tview"
+)
 
 type Linters struct {
 	*tview.Table
@@ -16,4 +19,11 @@ func NewLinters() *Linters {
 		SetTitle("Linters").SetTitleAlign(tview.AlignLeft)
 
 	return l
+}
+
+func (s *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
+	s.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		globalKeybind(event)
+		return event
+	})
 }
