@@ -38,7 +38,7 @@ func (o *OSCommand) openCommand() string {
 		if err != nil {
 			o.Logger.Error("failed to get path to vi", err)
 		}
-		executable = string(vi)
+		executable = vi
 	}
 	if executable == "" {
 		// TODO: Populate platform defaults,
