@@ -82,7 +82,12 @@ func (g *Gui) switchPanel(p tview.Primitive) {
 	g.application.SetFocus(p)
 }
 
+// openFile temporarily suspends this application and open file with the editor as a sub process.
 func (g *Gui) openFile(filepath string, line, colmun int) error {
-	g.osCommand.OpenFileAtLineColumn(filepath, line, colmun)
+	g.application.Suspend(func() {
+		if err := g.osCommand.OpenFileAtLineColumn(filepath, line, colmun); err != nil {
+			g.logger.Error(err)
+		}
+	})
 	return nil
 }

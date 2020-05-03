@@ -31,9 +31,12 @@ func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFil
 			case golangcilint.Issue:
 				if err := openFile(ref.FilePath(), ref.Line(), ref.Column()); err != nil {
 					pp.Println(err) // TODO: Replace with logrus
+					return event
 				}
+				return event
 			case string:
 				node.SetExpanded(!node.IsExpanded())
+				return event
 			}
 		}
 		globalKeybind(event)
