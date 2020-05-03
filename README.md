@@ -1,14 +1,28 @@
 # golintui
 
-## Features
+`golintui` is a TUI tool that helps you run all sorts of linters with ease and organize its results, with the power of [golangci-lint](https://github.com/golangci/golangci-lint).
 
-- Easy to operate golangci-lint
-- Able to sort out the issues for each linter
+## Cool features
+
+- Simple UI
+- Selectable linters on the UI.
+- Sorting out the issues for each linter
 - Able to open files by specifying the issue line
+
+
+## Installation
+
+**Source**
+
+```bash
+go get github.com/nakabonne/golintui
+```
 
 ## Usage
 
-Note that, it may not able to display correctly without the following locale settings:
+Requires: [golangci-lint](https://github.com/golangci/golangci-lint) executable.  
+  
+Be sure to change the CTYPE as shown below if your locale isn't `en_US`. The UI does not display well without it.
 
 ```bash
 export LC_CTYPE=en_US.UTF-8
@@ -20,5 +34,32 @@ export LC_CTYPE=en_US.UTF-8
 golintui
 ```
 
-Just press `r`, then results from golangci-lint should be shown.
-You can open and edit the issue file.
+Just press <kbd>r</kbd>, then results from the linters should be shown.
+
+### Keybinds
+
+**Global**
+
+<pre>
+  <kbd>r</kbd>: run selected linters against the selected directories.
+  <kbd>q</kbd>: quit
+</pre>
+
+## Settings
+
+### Editor
+`golintui` refers to `$EDITOR` by default to open the problematic file. You can change the editor to your taste and habits by setting `$GOLINTUI_OPEN_COMMAND`.  
+
+For instance, for users of VSCode:
+
+```bash
+export GOLINTUI_OPEN_COMMAND="code -r"
+```
+
+## Editors that can open by specifying a line
+
+- vim(vi)
+- emacs
+- VSCode
+
+Please let me know how to open a file by specifying a line if the editor you're used to is missing.
