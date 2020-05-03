@@ -5,9 +5,9 @@ import (
 
 	"github.com/rivo/tview"
 
+	"github.com/nakabonne/golintui/pkg/editor"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
 	"github.com/nakabonne/golintui/pkg/gui/item"
-	"github.com/nakabonne/golintui/pkg/oscommand"
 )
 
 // Gui wraps the tview application which handles rendering and events.
@@ -20,12 +20,12 @@ type Gui struct {
 	resultsItem     *item.Results
 	infoItem        *item.Info
 
-	runner    *golangcilint.Runner
-	osCommand *oscommand.OSCommand
-	logger    *logrus.Entry
+	runner *golangcilint.Runner
+	editor *editor.Editor
+	logger *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner, command *oscommand.OSCommand) *Gui {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) *Gui {
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(),
@@ -34,7 +34,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner, command *oscommand.O
 		infoItem:        item.NewInfo(runner.GetVersion()), // TODO: Run GetVersion() concurrency
 		runner:          runner,
 		logger:          logger,
-		osCommand:       command,
+		editor:          command,
 	}
 }
 
@@ -85,7 +85,7 @@ func (g *Gui) switchPanel(p tview.Primitive) {
 // openFile temporarily suspends this application and open file with the editor as a sub process.
 func (g *Gui) openFile(filepath string, line, colmun int) error {
 	g.application.Suspend(func() {
-		if err := g.osCommand.OpenFileAtLineColumn(filepath, line, colmun); err != nil {
+		if err := g.editor.OpenFileAtLineColumn(filepath, line, colmun); err != nil {
 			g.logger.Error(err)
 		}
 	})

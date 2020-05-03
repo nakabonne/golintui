@@ -1,4 +1,4 @@
-package oscommand
+package editor
 
 import (
 	"fmt"
@@ -9,34 +9,32 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type OSCommand struct {
-	OpenCommandEnv string
-	Logger         *logrus.Entry
+type Editor struct {
+	OpenCommandEnvKey string
+	Logger            *logrus.Entry
 }
 
-func NewOSCommand(openCommandEnv string, logger *logrus.Entry) *OSCommand {
-	return &OSCommand{OpenCommandEnv: openCommandEnv, Logger: logger}
+func NewEditor(openCommandEnv string, logger *logrus.Entry) *Editor {
+	return &Editor{OpenCommandEnvKey: openCommandEnv, Logger: logger}
 }
 
 // OpenFileAtLineColumn opens a file at a specific line and column.
-func (o *OSCommand) OpenFileAtLineColumn(filename string, line, column int) error {
-	command := specifyLineColumn(o.openCommand(), filename, line, column)
-	//_, err := o.runCommand(command[0], command[1:]...)
-	return o.runSubprocess(command[0], command[1:]...)
-	//return err
+func (e *Editor) OpenFileAtLineColumn(filename string, line, column int) error {
+	command := specifyLineColumn(e.openCommand(), filename, line, column)
+	return e.run(command[0], command[1:]...)
 }
 
 // openCommand returns an executable editor command.
 // Falling back to environment variable for golintui, EDITOR then vi.
-func (o *OSCommand) openCommand() string {
-	executable := os.Getenv(o.OpenCommandEnv)
+func (e *Editor) openCommand() string {
+	executable := os.Getenv(e.OpenCommandEnvKey)
 	if executable == "" {
 		executable = os.Getenv("EDITOR")
 	}
 	if executable == "" {
 		vi, err := exec.LookPath("vi")
 		if err != nil {
-			o.Logger.Error("failed to get path to vi", err)
+			e.Logger.Error("failed to get path to vi", err)
 		}
 		executable = vi
 	}
@@ -75,34 +73,21 @@ func specifyLineColumn(command, filename string, line, column int) []string {
 	return res
 }
 
-func (o *OSCommand) runCommand(executable string, args ...string) ([]byte, error) {
-	cmd := exec.Command(executable, args...)
-	return cmd.CombinedOutput()
-}
-
-func (o *OSCommand) runSubprocess(executable string, args ...string) error {
+func (e *Editor) run(executable string, args ...string) error {
 	cmd := exec.Command(executable, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Env = os.Environ()
 
-	//fmt.Fprintf(os.Stdout, "\n%s\n\n", utils.ColoredString("+ "+strings.Join(cmd.Args, " "), color.FgBlue))
-
-	o.Logger.Info("now start running!")
+	e.Logger.Debug("now start running editor")
 	if err := cmd.Run(); err != nil {
 		// not handling the error explicitly because usually we're going to see it in the output anyway
-		o.Logger.Error(err)
+		e.Logger.Error(err)
 	}
-	o.Logger.Info("now finish!")
+	e.Logger.Debug("finish to edit")
 
-	/*	cmd.Stdout = ioutil.Discard
-		cmd.Stderr = ioutil.Discard
-		cmd.Stdin = nil
-		cmd = nil
-
-		fmt.Fprintf(os.Stdout, "\n%s", utils.ColoredString("Press Enter", color.FgGreen))
-		fmt.Scanln() // wait for enter press
-	*/
+	// fmt.Fprintf(os.Stdout, "\n%s", utils.ColoredString("Press Enter", color.FgGreen))
+	// fmt.Scanln() // wait for enter press
 	return nil
 }
