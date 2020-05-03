@@ -20,3 +20,5 @@ golintui
 
 # log file for debugging
 development.log
+
+.DS_Store
