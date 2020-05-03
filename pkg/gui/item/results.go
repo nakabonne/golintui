@@ -10,6 +10,7 @@ import (
 
 type Results struct {
 	*tview.TreeView
+	latestIssues []golangcilint.Issue
 }
 
 func NewResults() *Results {
@@ -17,6 +18,7 @@ func NewResults() *Results {
 		TreeView: tview.NewTreeView(),
 	}
 	b.SetBorder(true).SetTitle("Results").SetTitleAlign(tview.AlignLeft)
+	b.ShowMessage("Press `r` to run linters")
 	return b
 }
 
@@ -39,15 +41,27 @@ func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFil
 	})
 }
 
-// ShowLatest updates its own tree view and lists the latest execution results.
-func (r *Results) ShowLatest(issues []golangcilint.Issue) {
-	root := tview.NewTreeNode("Issues").
+func (r *Results) SetLatestIssues(issues []golangcilint.Issue) {
+	r.latestIssues = issues
+}
+
+// ShowLatestIssues updates its own tree view and lists the latest execution results.
+func (r *Results) ShowLatestIssues() {
+	root := tview.NewTreeNode("").
 		SetColor(tcell.ColorWhite)
 
 	r.SetRoot(root).
 		SetCurrentNode(root)
 
-	r.addChildren(root, issues)
+	r.addChildren(root, r.latestIssues)
+}
+
+func (r *Results) ShowMessage(msg string) {
+	root := tview.NewTreeNode(msg).
+		SetColor(tcell.ColorWhite)
+
+	r.SetRoot(root).
+		SetCurrentNode(root)
 }
 
 func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue) {

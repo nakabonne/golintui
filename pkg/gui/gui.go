@@ -10,6 +10,7 @@ import (
 	"github.com/nakabonne/golintui/pkg/oscommand"
 )
 
+// Gui wraps the tview application which handles rendering and events.
 type Gui struct {
 	application *tview.Application
 	pages       *tview.Pages

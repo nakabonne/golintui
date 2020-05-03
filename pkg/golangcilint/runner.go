@@ -56,9 +56,10 @@ func (r *Runner) RemoveArgs(arg string) {
 func (r *Runner) Run() ([]Issue, error) {
 	outJSON, err := r.execute(append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, r.Args...)...)
 	if err != nil {
-		fmt.Println("outJSON:", string(outJSON), "err:", err)
-		r.logger.Error("failed to run golangci-lint run", outJSON, err)
-		return nil, err
+		r.logger.WithError(err).
+			WithField("stderr", string(outJSON)).
+			Error("failed to run golangci-lint run")
+		return nil, fmt.Errorf("%s: %w", string(outJSON), err)
 	}
 
 	var res printers.JSONResult

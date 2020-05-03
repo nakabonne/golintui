@@ -16,10 +16,15 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 	case 'r':
 		issues, err := g.runner.Run()
 		if err != nil {
-			g.logger.Error(err.Error())
+			g.resultsItem.ShowMessage(err.Error())
 			return
 		}
-		g.resultsItem.ShowLatest(issues)
-		g.switchPanel(g.resultsItem)
+		if len(issues) == 0 {
+			g.resultsItem.ShowMessage("no issues found")
+		} else {
+			g.resultsItem.SetLatestIssues(issues)
+			g.resultsItem.ShowLatestIssues()
+			g.switchPanel(g.resultsItem)
+		}
 	}
 }
