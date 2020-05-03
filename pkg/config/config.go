@@ -1,35 +1,40 @@
 package config
 
-const defaultExecutable = "golangci-lint"
+const (
+	defaultExecutable     = "golangci-lint"
+	defaultOpenCommandEnv = "GOLINTUI_OPEN_COMMAND"
+)
 
 // Config includes the base configuration fields required for golintui.
 type Config struct {
-	Name        string
-	Debug       bool
-	Version     string
-	Commit      string
-	BuildDate   string
-	BuildSource string
+	Name           string
+	Debug          bool
+	Version        string
+	Commit         string
+	BuildDate      string
+	BuildSource    string
+	OpenCommandEnv string
 
 	// Path to a golangci-lint executable.
 	Executable string
-	// UserConfig    *viper.Viper
-	// UserConfigDir string
-	// IsNewRepo bool
 }
 
-func New(name, version, commit, date, buildSource, executable string, debuggingFlag bool) (*Config, error) {
+func New(name, version, commit, date, buildSource, executable, openCommandEnv string, debuggingFlag bool) (*Config, error) {
 	if executable == "" {
 		executable = defaultExecutable
 	}
+	if openCommandEnv == "" {
+		openCommandEnv = defaultOpenCommandEnv
+	}
 	return &Config{
-		Name:        "",
-		Debug:       true,
-		Version:     "",
-		Commit:      "",
-		BuildDate:   "",
-		BuildSource: "",
-		Executable:  executable,
+		Name:           "",
+		Debug:          true,
+		Version:        "",
+		Commit:         "",
+		BuildDate:      "",
+		BuildSource:    "",
+		Executable:     executable,
+		OpenCommandEnv: openCommandEnv,
 	}, nil
 }
 

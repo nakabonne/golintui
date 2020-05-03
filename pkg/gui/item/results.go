@@ -20,14 +20,14 @@ func NewResults() *Results {
 	return b
 }
 
-func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFile func(string) error) {
+func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFile func(string, int, int) error) {
 	r.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		node := r.GetCurrentNode()
 		switch event.Rune() {
 		case 'o':
 			switch ref := node.GetReference().(type) {
 			case golangcilint.Issue:
-				if err := openFile(ref.FilePath()); err != nil {
+				if err := openFile(ref.FilePath(), ref.Line(), ref.Column()); err != nil {
 					pp.Println(err) // TODO: Replace with logrus
 				}
 			case string:

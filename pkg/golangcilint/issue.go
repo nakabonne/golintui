@@ -36,3 +36,11 @@ func (i *Issue) FromLinter() string {
 func (i *Issue) FilePath() string {
 	return i.issue.FilePath()
 }
+
+func (i *Issue) Line() int {
+	return i.issue.Line()
+}
+
+func (i *Issue) Column() int {
+	return i.issue.Column()
+}

@@ -8,6 +8,7 @@ import (
 	"github.com/nakabonne/golintui/pkg/config"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
 	"github.com/nakabonne/golintui/pkg/gui"
+	"github.com/nakabonne/golintui/pkg/oscommand"
 )
 
 type App struct {
@@ -24,11 +25,12 @@ type App struct {
 func New(conf *config.Config) (*App, error) {
 	logger := newLogger(conf)
 	runner := golangcilint.NewRunner(conf.Executable, []string{}, logger)
+	command := oscommand.NewOSCommand(conf.OpenCommandEnv, logger)
 	return &App{
 		closers: []io.Closer{},
 		Config:  conf,
 		Log:     logger,
-		Gui:     gui.New(logger, runner),
+		Gui:     gui.New(logger, runner, command),
 	}, nil
 }
 

@@ -6,8 +6,8 @@ import (
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/golangcilint"
-
 	"github.com/nakabonne/golintui/pkg/gui/item"
+	"github.com/nakabonne/golintui/pkg/oscommand"
 )
 
 type Gui struct {
@@ -19,11 +19,12 @@ type Gui struct {
 	resultsItem     *item.Results
 	infoItem        *item.Info
 
-	runner *golangcilint.Runner
-	logger *logrus.Entry
+	runner    *golangcilint.Runner
+	osCommand *oscommand.OSCommand
+	logger    *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner) *Gui {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, command *oscommand.OSCommand) *Gui {
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(),
@@ -32,6 +33,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner) *Gui {
 		infoItem:        item.NewInfo(runner.GetVersion()), // TODO: Run GetVersion() concurrency
 		runner:          runner,
 		logger:          logger,
+		osCommand:       command,
 	}
 }
 
@@ -79,6 +81,7 @@ func (g *Gui) switchPanel(p tview.Primitive) {
 	g.application.SetFocus(p)
 }
 
-func (g *Gui) openFile(filepagh string) error {
+func (g *Gui) openFile(filepath string, line, colmun int) error {
+	g.osCommand.OpenFileAtLineColumn(filepath, line, colmun)
 	return nil
 }

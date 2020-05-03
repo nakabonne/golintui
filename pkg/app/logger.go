@@ -34,7 +34,7 @@ func newDevelopmentLogger() *logrus.Logger {
 	log.SetLevel(logrus.TraceLevel)
 	file, err := os.OpenFile("development.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		panic("unable to log to file") // TODO: don't panic (also, remove this call to the `panic` function)
+		log.Fatal("unable to log to file")
 	}
 	log.SetOutput(file)
 	pp.SetDefaultOutput(log.Out)
