@@ -46,6 +46,11 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectA
 	})
 
 	l.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Rune() {
+		case 'a':
+			// TODO: Enable/Disable all linters
+			return event
+		}
 		globalKeybind(event)
 		return event
 	})
