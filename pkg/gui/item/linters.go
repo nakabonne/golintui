@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	DefaultLinterColor = tcell.ColorAqua
-	EnabledLinterColor = tcell.ColorYellow
+	DefaultLinterColor = tcell.ColorRed
+	EnabledLinterColor = tcell.ColorLime
 )
 
 type Linters struct {

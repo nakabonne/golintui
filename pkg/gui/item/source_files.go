@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	DefaultDirColor  = tcell.ColorAqua
-	SelectedDirColor = tcell.ColorYellow
+	DefaultDirColor  = tcell.ColorRed
+	SelectedDirColor = tcell.ColorLime
 )
 
 type SourceFiles struct {
@@ -67,12 +67,12 @@ func (s *SourceFiles) addChildren(node *tview.TreeNode, path string) error {
 		return err
 	}
 	for _, file := range files {
+		if !file.IsDir() {
+			continue
+		}
 		child := tview.NewTreeNode(file.Name()).
 			SetReference(filepath.Join(path, file.Name())).
-			SetSelectable(file.IsDir())
-		if file.IsDir() {
-			child.SetColor(DefaultDirColor)
-		}
+			SetSelectable(file.IsDir()).SetColor(DefaultDirColor)
 		node.AddChild(child)
 	}
 	return nil
