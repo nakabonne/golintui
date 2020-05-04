@@ -54,12 +54,9 @@ func (r *Runner) RemoveArgs(arg string) {
 
 // Run executes `golangci-lint run` with its own args and configuration.
 func (r *Runner) Run() ([]Issue, error) {
-	outJSON, err := r.execute(append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, r.Args...)...)
+	outJSON, err := r.run(r.Args)
 	if err != nil {
-		r.logger.WithError(err).
-			WithField("stderr", string(outJSON)).
-			Error("failed to run golangci-lint run")
-		return nil, fmt.Errorf("%s: %w", string(outJSON), err)
+		return nil, err
 	}
 
 	var res printers.JSONResult
@@ -69,10 +66,28 @@ func (r *Runner) Run() ([]Issue, error) {
 	return NewIssues(res.Issues), nil
 }
 
-func (r *Runner) ListLinters() []Linter {
-	// TODO: First up, run `golangci-lint run --out-format=json` against safety dir.
-	//   And then fetch linters from Report.Linters.
-	return []Linter{}
+// ListLinters lists all linters.
+func (r *Runner) ListLinters() ([]Linter, error) {
+	tmpDir, cleaner, err := tmpProject()
+	if err != nil {
+		return nil, err
+	}
+	defer cleaner()
+
+	outJSON, err := r.run([]string{tmpDir})
+	if err != nil {
+		return nil, err
+	}
+
+	var res printers.JSONResult
+	if err := json.Unmarshal(outJSON, &res); err != nil {
+		return nil, err
+	}
+
+	if res.Report == nil {
+		return nil, err
+	}
+	return NewLinters(res.Report.Linters), nil
 }
 
 func (r *Runner) GetVersion() string {
@@ -82,6 +97,17 @@ func (r *Runner) GetVersion() string {
 		return ""
 	}
 	return string(version)
+}
+
+func (r *Runner) run(args []string) ([]byte, error) {
+	out, err := r.execute(append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, args...)...)
+	if err != nil {
+		r.logger.WithError(err).
+			WithField("stderr", string(out)).
+			Error("failed to run golangci-lint run")
+		return nil, fmt.Errorf("%s: %w", string(out), err)
+	}
+	return out, err
 }
 
 func (r *Runner) execute(args ...string) ([]byte, error) {
