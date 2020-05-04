@@ -88,8 +88,18 @@ func (r *Runner) GetVersion() string {
 	return string(version)
 }
 
-func (r *Runner) run(args []string) ([]byte, error) {
-	out, err := r.execute(append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, args...)...)
+func (r *Runner) run(targets []string) ([]byte, error) {
+	linters := []string{}
+	for _, l := range r.Linters {
+		if l.Enabled() {
+			linters = append(linters, "-E", l.Name())
+		}
+	}
+	if len(linters) != 0 {
+		linters = append(linters, "--disable-all")
+	}
+	args := append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, linters...)
+	out, err := r.execute(append(args, targets...)...)
 	if err != nil {
 		r.logger.WithError(err).
 			WithField("stderr", string(out)).
@@ -102,7 +112,7 @@ func (r *Runner) run(args []string) ([]byte, error) {
 func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd := exec.Command(r.Executable, args...)
 	cmd.Dir = r.workingDir
-	r.logger.WithField("executable", r.Executable).WithField("args", args).Debug("run golangci-lint")
+	r.logger.WithField("executable", r.Executable).WithField("args", args).Debug("start running golangci-lint")
 	return cmd.CombinedOutput()
 }
 
