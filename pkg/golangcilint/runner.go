@@ -18,14 +18,14 @@ type Runner struct {
 	// Path to a golangci-lint executable.
 	Executable string
 	// Args given to `golangci-lint run`.
-	// An arg can be a file name, a dir, and in addition,
+	// An arg can be a file name, a workingDir, and in addition,
 	// `...` to analyze them recursively.
 	Args   []string
 	Config *config.Config
 
-	// dir specifies the working directory.
-	dir    string
-	logger *logrus.Entry
+	// specifies the working directory of golangci-lint
+	workingDir string
+	logger     *logrus.Entry
 }
 
 func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
@@ -34,7 +34,7 @@ func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
 		Executable: executable,
 		Args:       args,
 		Config:     &config.Config{},
-		dir:        ".",
+		workingDir: ".",
 		logger:     logger,
 	}
 }
@@ -42,6 +42,7 @@ func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
 func (r *Runner) AddArgs(arg string) {
 	r.Args = append(r.Args, arg+globOperator)
 }
+
 func (r *Runner) RemoveArgs(arg string) {
 	args := make([]string, 0, len(r.Args)-1)
 	for _, a := range r.Args {
@@ -66,7 +67,7 @@ func (r *Runner) Run() ([]Issue, error) {
 	return NewIssues(res.Issues), nil
 }
 
-// ListLinters lists all linters.
+// ListLinters returns all linters, with settings about whether to enable or not.
 func (r *Runner) ListLinters() ([]Linter, error) {
 	tmpDir, cleaner, err := tmpProject()
 	if err != nil {
@@ -74,7 +75,7 @@ func (r *Runner) ListLinters() ([]Linter, error) {
 	}
 	defer cleaner()
 
-	outJSON, err := r.run([]string{tmpDir})
+	outJSON, err := r.run([]string{fmt.Sprintf("./%s/%s", tmpDir, tmpGoFileName)})
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +113,7 @@ func (r *Runner) run(args []string) ([]byte, error) {
 
 func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd := exec.Command(r.Executable, args...)
-	cmd.Dir = r.dir
+	cmd.Dir = r.workingDir
+	r.logger.WithField("executable", r.Executable).WithField("args", args).Debug("run golangci-lint")
 	return cmd.CombinedOutput()
 }

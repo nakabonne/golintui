@@ -25,12 +25,16 @@ type App struct {
 func New(conf *config.Config) (*App, error) {
 	logger := newLogger(conf)
 	runner := golangcilint.NewRunner(conf.Executable, []string{}, logger)
-	command := editor.NewEditor(conf.OpenCommandEnv, logger)
+	editor := editor.NewEditor(conf.OpenCommandEnv, logger)
+	g, err := gui.New(logger, runner, editor)
+	if err != nil {
+		return nil, err
+	}
 	return &App{
 		closers: []io.Closer{},
 		Config:  conf,
 		Log:     logger,
-		Gui:     gui.New(logger, runner, command),
+		Gui:     g,
 	}, nil
 }
 

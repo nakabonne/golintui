@@ -92,6 +92,5 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 			child.AddChild(grandchild)
 		}
 		child.SetExpanded(false)
-		// TODO: Append source lines as children.
 	}
 }

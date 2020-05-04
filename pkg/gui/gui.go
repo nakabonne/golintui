@@ -25,17 +25,21 @@ type Gui struct {
 	logger *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) *Gui {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) (*Gui, error) {
+	linters, err := runner.ListLinters()
+	if err != nil {
+		return nil, err
+	}
 	return &Gui{
 		application:     tview.NewApplication(),
-		lintersItem:     item.NewLinters(),
+		lintersItem:     item.NewLinters(linters),
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
 		infoItem:        item.NewInfo(runner.GetVersion()), // TODO: Run GetVersion() concurrency
 		runner:          runner,
 		logger:          logger,
 		editor:          command,
-	}
+	}, nil
 }
 
 func (g *Gui) Run() error {

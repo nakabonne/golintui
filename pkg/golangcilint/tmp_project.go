@@ -6,21 +6,25 @@ import (
 	"path/filepath"
 )
 
-const mainContents = `package main
+const (
+	tmpGoFileName = "main.go"
+	mainContents  = `package main
 
 func main() {
 }`
+)
 
 // tmpProject creates a temporary Go project.
 func tmpProject() (string, func(), error) {
-	tmpDir, err := ioutil.TempDir("", "nakabonne-golintui")
+	tmpDir, err := ioutil.TempDir(".", "nakabonne-golintui")
 	if err != nil {
 		return "", nil, err
 	}
-	_, err = create(filepath.Join(tmpDir, "main.go"), mainContents)
+	_, err = create(filepath.Join(tmpDir, tmpGoFileName), mainContents)
 	if err != nil {
 		return "", nil, err
 	}
+
 	cleaner := func() {
 		os.RemoveAll(tmpDir)
 	}
