@@ -1,6 +1,8 @@
 package item
 
 import (
+	"sort"
+
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
@@ -50,7 +52,7 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectA
 }
 
 func (l *Linters) addChildren(node *tview.TreeNode, linters []golangcilint.Linter) {
-	// TODO: Sort linters by alphabet
+	sort.SliceStable(linters, func(i, j int) bool { return linters[i].Name() < linters[j].Name() })
 	for _, linter := range linters {
 		child := tview.NewTreeNode(linter.Name()).
 			SetReference(linter).
