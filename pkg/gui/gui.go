@@ -101,13 +101,13 @@ func (g *Gui) unregisterPath(node *tview.TreeNode, path string) {
 	node.SetColor(item.DefaultDirColor)
 }
 
-func (g *Gui) enableLinter(node *tview.TreeNode, linter string) {
-	g.runner.EnableLinter(linter)
+func (g *Gui) enableLinter(node *tview.TreeNode, linter *golangcilint.Linter) {
+	g.runner.EnableLinter(linter.Name())
 	node.SetColor(item.EnabledLinterColor)
 }
 
-func (g *Gui) disableLinter(node *tview.TreeNode, linter string) {
-	g.runner.DisableLinter(linter)
+func (g *Gui) disableLinter(node *tview.TreeNode, linter *golangcilint.Linter) {
+	g.runner.DisableLinter(linter.Name())
 	node.SetColor(item.DefaultLinterColor)
 }
 

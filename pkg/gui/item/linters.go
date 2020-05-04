@@ -30,16 +30,16 @@ func NewLinters(linters []golangcilint.Linter) *Linters {
 	return l
 }
 
-func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, string)) {
+func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, *golangcilint.Linter)) {
 	l.SetSelectedFunc(func(node *tview.TreeNode) {
 		ref, ok := node.GetReference().(golangcilint.Linter)
 		if !ok {
 			return
 		}
-		if ref.Enabled() {
-			unselectAction(node, ref.Name())
+		if node.GetColor() == EnabledLinterColor {
+			unselectAction(node, &ref)
 		} else {
-			selectAction(node, ref.Name())
+			selectAction(node, &ref)
 		}
 	})
 
