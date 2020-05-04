@@ -36,7 +36,7 @@ func NewSourceFiles(rootDir string) *SourceFiles {
 	return s
 }
 
-func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(node *tview.TreeNode, path string)) {
+func (s *SourceFiles) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, string)) {
 	s.SetSelectedFunc(func(node *tview.TreeNode) {
 		ref, ok := node.GetReference().(string)
 		if !ok {

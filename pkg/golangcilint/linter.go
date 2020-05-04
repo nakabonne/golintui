@@ -26,3 +26,13 @@ func (l *Linter) Name() string {
 func (l *Linter) Enabled() bool {
 	return l.enabled
 }
+
+// Enable makes itself enabled.
+func (l *Linter) Enable() {
+	l.enabled = true
+}
+
+// Disable makes itself disabled.
+func (l *Linter) Disable() {
+	l.enabled = false
+}

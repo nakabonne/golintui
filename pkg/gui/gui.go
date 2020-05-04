@@ -101,6 +101,16 @@ func (g *Gui) unregisterPath(node *tview.TreeNode, path string) {
 	node.SetColor(item.DefaultDirColor)
 }
 
+func (g *Gui) enableLinter(node *tview.TreeNode, linter string) {
+	g.runner.EnableLinter(linter)
+	node.SetColor(item.EnabledLinterColor)
+}
+
+func (g *Gui) disableLinter(node *tview.TreeNode, linter string) {
+	g.runner.DisableLinter(linter)
+	node.SetColor(item.DefaultLinterColor)
+}
+
 // switchPanel switches to focus on the given Primitive.
 func (g *Gui) switchPanel(p tview.Primitive) {
 	g.application.SetFocus(p)

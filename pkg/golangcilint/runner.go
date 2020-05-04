@@ -79,6 +79,26 @@ func (r *Runner) ListLinters() []Linter {
 	return res
 }
 
+func (r *Runner) EnableLinter(linterName string) {
+	linter, ok := r.Linters[linterName]
+	if !ok {
+		r.logger.WithField("linter", linterName).Error("linter not found")
+		return
+	}
+	linter.Enable()
+	r.Linters[linterName] = linter
+}
+
+func (r *Runner) DisableLinter(linterName string) {
+	linter, ok := r.Linters[linterName]
+	if !ok {
+		r.logger.WithField("linter", linterName).Error("linter not found")
+		return
+	}
+	linter.Disable()
+	r.Linters[linterName] = linter
+}
+
 func (r *Runner) GetVersion() string {
 	version, err := r.execute("version")
 	if err != nil {
@@ -116,6 +136,7 @@ func (r *Runner) execute(args ...string) ([]byte, error) {
 	return cmd.CombinedOutput()
 }
 
+// initLinters sets linters applied for the current directory.
 func (r *Runner) initLinters() error {
 	tmpDir, cleaner, err := tmpProject()
 	if err != nil {
@@ -123,6 +144,7 @@ func (r *Runner) initLinters() error {
 	}
 	defer cleaner()
 
+	// Run against tmp project to fetch linters information.
 	outJSON, err := r.run([]string{fmt.Sprintf("./%s/%s", tmpDir, tmpGoFileName)})
 	if err != nil {
 		return err
