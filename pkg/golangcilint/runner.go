@@ -2,14 +2,13 @@ package golangcilint
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os/exec"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/golangci/golangci-lint/pkg/printers"
-
-	"github.com/nakabonne/golintui/pkg/config"
 )
 
 const globOperator = "/..."
@@ -20,23 +19,27 @@ type Runner struct {
 	// Args given to `golangci-lint run`.
 	// An arg can be a file name, a workingDir, and in addition,
 	// `...` to analyze them recursively.
-	Args   []string
-	Config *config.Config
+	Args []string
+	// Path to config file for golangci-lint.
+	// The Supported formats are yaml, json and toml.
+	ConfigPath string
+	// A map to indicate which linters are enabled.
+	Linters map[string]Linter
 
-	// specifies the working directory of golangci-lint
+	// Specifies the working directory of golangci-lint
 	workingDir string
 	logger     *logrus.Entry
 }
 
-func NewRunner(executable string, args []string, logger *logrus.Entry) *Runner {
-	// TODO: Automatically read config from golangci settings file.
-	return &Runner{
+func NewRunner(executable string, args []string, logger *logrus.Entry) (*Runner, error) {
+	r := &Runner{
 		Executable: executable,
 		Args:       args,
-		Config:     &config.Config{},
 		workingDir: ".",
 		logger:     logger,
 	}
+	err := r.initLinters()
+	return r, err
 }
 
 func (r *Runner) AddArgs(arg string) {
@@ -68,27 +71,12 @@ func (r *Runner) Run() ([]Issue, error) {
 }
 
 // ListLinters returns all linters, with settings about whether to enable or not.
-func (r *Runner) ListLinters() ([]Linter, error) {
-	tmpDir, cleaner, err := tmpProject()
-	if err != nil {
-		return nil, err
+func (r *Runner) ListLinters() []Linter {
+	res := make([]Linter, 0, len(r.Linters))
+	for _, linter := range r.Linters {
+		res = append(res, linter)
 	}
-	defer cleaner()
-
-	outJSON, err := r.run([]string{fmt.Sprintf("./%s/%s", tmpDir, tmpGoFileName)})
-	if err != nil {
-		return nil, err
-	}
-
-	var res printers.JSONResult
-	if err := json.Unmarshal(outJSON, &res); err != nil {
-		return nil, err
-	}
-
-	if res.Report == nil {
-		return nil, err
-	}
-	return NewLinters(res.Report.Linters), nil
+	return res
 }
 
 func (r *Runner) GetVersion() string {
@@ -116,4 +104,32 @@ func (r *Runner) execute(args ...string) ([]byte, error) {
 	cmd.Dir = r.workingDir
 	r.logger.WithField("executable", r.Executable).WithField("args", args).Debug("run golangci-lint")
 	return cmd.CombinedOutput()
+}
+
+func (r *Runner) initLinters() error {
+	tmpDir, cleaner, err := tmpProject()
+	if err != nil {
+		return err
+	}
+	defer cleaner()
+
+	outJSON, err := r.run([]string{fmt.Sprintf("./%s/%s", tmpDir, tmpGoFileName)})
+	if err != nil {
+		return err
+	}
+
+	var res printers.JSONResult
+	if err := json.Unmarshal(outJSON, &res); err != nil {
+		return err
+	}
+
+	if res.Report == nil {
+		return errors.New("wrong result was returned from golangci-lint")
+	}
+	linters := NewLinters(res.Report.Linters)
+	r.Linters = make(map[string]Linter, len(linters))
+	for _, l := range linters {
+		r.Linters[l.Name()] = l
+	}
+	return nil
 }

@@ -26,10 +26,7 @@ type Gui struct {
 }
 
 func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) (*Gui, error) {
-	linters, err := runner.ListLinters()
-	if err != nil {
-		return nil, err
-	}
+	linters := runner.ListLinters()
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(linters),

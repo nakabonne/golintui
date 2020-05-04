@@ -38,6 +38,7 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey)) {
 }
 
 func (l *Linters) addChildren(node *tview.TreeNode, linters []golangcilint.Linter) {
+	// TODO: Sort linters by alphabet
 	for _, linter := range linters {
 		child := tview.NewTreeNode(linter.Name()).
 			SetReference(linter).
