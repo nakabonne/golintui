@@ -31,7 +31,7 @@ func (c *Config) ReadConfig() error {
 	return nil
 }
 
-func (c *Config) RemoveAllLinters() {
+func (c *Config) ClearLinters() {
 	c.config.Linters = gconfig.Linters{}
 }
 

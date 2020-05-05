@@ -65,7 +65,7 @@ func (r *Runner) Run() ([]Issue, error) {
 	if err := r.cfg.ReadConfig(); err != nil {
 		return nil, err
 	}
-	r.cfg.RemoveAllLinters()
+	r.cfg.ClearLinters()
 	b, err := r.cfg.ToYAML()
 	if err != nil {
 		return nil, err
