@@ -38,6 +38,8 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectA
 		if !ok {
 			return
 		}
+		// TODO: Use ref.Enable() to check if enabled.
+		//    For that, be sure to populate a pointer to linter to the reference.
 		if node.GetColor() == EnabledLinterColor {
 			unselectAction(node, &ref)
 		} else {
