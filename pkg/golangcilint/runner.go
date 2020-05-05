@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"os/exec"
 
+	"github.com/golangci/golangci-lint/pkg/printers"
 	"github.com/sirupsen/logrus"
 
-	"github.com/golangci/golangci-lint/pkg/printers"
+	"github.com/nakabonne/golintui/pkg/golangcilint/config"
 )
 
 const globOperator = "/..."
@@ -22,13 +23,14 @@ type Runner struct {
 	Args []string
 	// Path to config file for golangci-lint.
 	// The Supported formats are yaml, json and toml.
-	ConfigPath string
+	//ConfigPath string
 	// A map to indicate which linters are enabled.
 	Linters map[string]Linter
 
 	// Specifies the working directory of golangci-lint
 	workingDir string
 	logger     *logrus.Entry
+	cfg        *config.Config
 }
 
 func NewRunner(executable string, args []string, logger *logrus.Entry) (*Runner, error) {
@@ -37,6 +39,7 @@ func NewRunner(executable string, args []string, logger *logrus.Entry) (*Runner,
 		Args:       args,
 		workingDir: ".",
 		logger:     logger,
+		cfg:        config.NewConfig(),
 	}
 	err := r.initLinters()
 	return r, err
@@ -58,6 +61,19 @@ func (r *Runner) RemoveArgs(arg string) {
 
 // Run executes `golangci-lint run` with its own args and configuration.
 func (r *Runner) Run() ([]Issue, error) {
+	if err := r.cfg.ReadConfig(); err != nil {
+		return nil, err
+	}
+	b, err := r.cfg.ToYAML()
+	if err != nil {
+		return nil, err
+	}
+	confPath, clean, err := tmpConfigFile(b)
+	if err != nil {
+		return nil, err
+	}
+	defer clean()
+	r.Args = append(r.Args, "--config", confPath)
 	outJSON, err := r.run(r.Args)
 	if err != nil {
 		return nil, err
@@ -109,6 +125,9 @@ func (r *Runner) GetVersion() string {
 }
 
 func (r *Runner) run(targets []string) ([]byte, error) {
+	args := []string{"run", "--out-format=json", "--issues-exit-code=0"}
+
+	// Specify enabled linters
 	linters := []string{}
 	for _, l := range r.Linters {
 		if l.Enabled() {
@@ -118,7 +137,8 @@ func (r *Runner) run(targets []string) ([]byte, error) {
 	if len(linters) != 0 {
 		linters = append(linters, "--disable-all")
 	}
-	args := append([]string{"run", "--out-format=json", "--issues-exit-code=0"}, linters...)
+	args = append(args, linters...)
+
 	out, err := r.execute(append(args, targets...)...)
 	if err != nil {
 		r.logger.WithError(err).

@@ -7,12 +7,14 @@ import (
 )
 
 const (
-	tmpGoFileName = "main.go"
-	mainContents  = `package main
+	tmpGoFileName     = "main.go"
+	tmpConfigFileName = ".golangci.yml"
+)
+
+var mainContents = []byte(`package main
 
 func main() {
-}`
-)
+}`)
 
 // tmpProject creates a temporary Go project.
 func tmpProject() (string, func(), error) {
@@ -31,7 +33,26 @@ func tmpProject() (string, func(), error) {
 	return tmpDir, cleaner, nil
 }
 
-func create(path, contents string) (*os.File, error) {
+// tmpConfigFile creates a temporary config file and returns its path.
+func tmpConfigFile(yml []byte) (string, func(), error) {
+	tmpDir, err := ioutil.TempDir("", "nakabonne-golintui")
+	if err != nil {
+		return "", nil, err
+	}
+	path := filepath.Join(tmpDir, tmpConfigFileName)
+	_, err = create(path, yml)
+	if err != nil {
+		return "", nil, err
+	}
+
+	cleaner := func() {
+		os.RemoveAll(tmpDir)
+	}
+	return path, cleaner, nil
+
+}
+
+func create(path string, contents []byte) (*os.File, error) {
 	f, err := os.Create(path)
 	if err != nil {
 		return nil, err
