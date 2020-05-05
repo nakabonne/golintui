@@ -61,9 +61,11 @@ func (r *Runner) RemoveArgs(arg string) {
 
 // Run executes `golangci-lint run` with its own args and configuration.
 func (r *Runner) Run() ([]Issue, error) {
+	// Prepare a temporary config file to disable all linters.
 	if err := r.cfg.ReadConfig(); err != nil {
 		return nil, err
 	}
+	r.cfg.RemoveAllLinters()
 	b, err := r.cfg.ToYAML()
 	if err != nil {
 		return nil, err
@@ -74,6 +76,7 @@ func (r *Runner) Run() ([]Issue, error) {
 	}
 	defer clean()
 	r.Args = append(r.Args, "--config", confPath)
+
 	outJSON, err := r.run(r.Args)
 	if err != nil {
 		return nil, err

@@ -6,7 +6,7 @@ import (
 	gconfig "github.com/golangci/golangci-lint/pkg/config"
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/report"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 // Config wraps golagnci-lint's Config
@@ -29,6 +29,10 @@ func (c *Config) ReadConfig() error {
 		return fmt.Errorf("can't read config: %w", err)
 	}
 	return nil
+}
+
+func (c *Config) RemoveAllLinters() {
+	c.config.Linters = gconfig.Linters{}
 }
 
 func (c *Config) ToYAML() ([]byte, error) {
