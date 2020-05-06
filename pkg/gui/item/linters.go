@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultLinterColor = tcell.ColorRed
+	DefaultLinterColor = tcell.ColorSilver
 	EnabledLinterColor = tcell.ColorLime
 )
 

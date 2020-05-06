@@ -113,18 +113,26 @@ func (g *Gui) switchPage(prev, next string) {
 	g.pages.RemovePage(prev).ShowPage(next)
 }
 
-func (g *Gui) modal(p tview.Primitive, width, height int) *tview.Grid {
-	return tview.NewGrid().
-		SetColumns(0, width, 0).
-		SetRows(0, height, 0).
-		AddItem(p, 1, 1, 1, 1, 0, 0, true)
+// showWarn shows the given message as a modal.
+// doneLabel param is used for the name of button to close.
+func (g *Gui) showWarn(message, doneLabel string) {
+	g.showModal(message, doneLabel, 60, 150, tcell.ColorBlack)
 }
 
-// message shows the given message as a modal.
-func (g *Gui) message(message, doneLabel string) {
+// showLoading shows the given message as a modal.
+// It doesn't provide any close buttons, instead it returns the function to close itself.
+func (g *Gui) showLoading(message string) func() {
+	g.showModal(message, "", 2, 100, tcell.ColorBlack)
+	close := func() {
+		g.switchPage(modalPageName, mainPageName)
+	}
+	return close
+}
+
+func (g *Gui) showModal(message, doneLabel string, rowWidth, colWidth int, backGroundColor tcell.Color) {
 	modal := tview.NewModal().
 		SetText(message).
-		SetBackgroundColor(tcell.ColorBlack)
+		SetBackgroundColor(backGroundColor)
 
 	if doneLabel != "" {
 		modal.AddButtons([]string{doneLabel}).
@@ -134,7 +142,12 @@ func (g *Gui) message(message, doneLabel string) {
 				}
 			})
 	}
-	g.pages.AddAndSwitchToPage(modalPageName, g.modal(modal, 150, 60), true).ShowPage(mainPageName)
+
+	grid := tview.NewGrid().
+		SetColumns(0, colWidth, 0).
+		SetRows(0, rowWidth, 0).
+		AddItem(modal, 1, 1, 1, 1, 0, 0, true)
+	g.pages.AddAndSwitchToPage(modalPageName, grid, true).ShowPage(mainPageName)
 }
 
 // registerPath adds path to golangci-lint runner as an arg.
@@ -155,7 +168,7 @@ func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 
 func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 	if err := g.runner.DisableLinter(linter.Name()); err != nil {
-		g.message(err.Error(), "Enter")
+		g.showWarn(err.Error(), "Enter")
 		return
 	}
 	node.SetColor(item.DefaultLinterColor)

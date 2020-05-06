@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DefaultDirColor  = tcell.ColorRed
+	DefaultDirColor  = tcell.ColorSilver
 	SelectedDirColor = tcell.ColorLime
 )
 

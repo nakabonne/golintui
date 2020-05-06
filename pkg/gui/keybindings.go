@@ -22,13 +22,13 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 	case 'q':
 		g.application.Stop()
 	case 'r':
-		g.message("running linters...", "")
+		close := g.showLoading("running linters...")
 
 		go func() {
 			issues, err := g.runner.Run()
-			g.switchPage(modalPageName, mainPageName)
+			close()
 			if err != nil {
-				g.resultsItem.ShowMessage(err.Error())
+				g.showWarn(err.Error(), "Close")
 				g.application.Draw()
 				return
 			}

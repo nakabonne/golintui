@@ -15,7 +15,7 @@ func NewNavi() *Navi {
 }
 
 const (
-	globalNavi = "[yellow::b]r[white]: run, [yellow::b]j[white]: move down, [yellow]k[white]: move up, [yellow]q[white]: quit"
+	globalNavi = "[aqua::b]r[white]: run, [aqua::b]j[white]: move down, [aqua]k[white]: move up, [aqua]q[white]: quit"
 )
 
 func (n *Navi) Update(p tview.Primitive) {
