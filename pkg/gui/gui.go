@@ -27,6 +27,7 @@ type Gui struct {
 	sourceFilesItem *item.SourceFiles
 	resultsItem     *item.Results
 	infoItem        *item.Info
+	naviItem        *item.Navi
 
 	runner *golangcilint.Runner
 	editor *editor.Editor
@@ -41,6 +42,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Edit
 		sourceFilesItem: item.NewSourceFiles("."),
 		resultsItem:     item.NewResults(),
 		infoItem:        item.NewInfo(runner.GetVersion()), // TODO: Run GetVersion() concurrency
+		naviItem:        item.NewNavi(),
 		runner:          runner,
 		logger:          logger,
 		editor:          command,
@@ -60,7 +62,7 @@ func (g *Gui) Run() error {
 // initGrid sets a grid based layout as a root primitive for the application.
 func (g *Gui) initGrid() {
 	grid := tview.NewGrid().
-		SetRows(1, 0).
+		SetRows(1, 0, 1).
 		SetColumns(30, 40, 0, 0).
 		SetBorders(true).
 		AddItem(g.infoItem, 0, 0, 1, 2, 0, 0, false)
@@ -68,7 +70,10 @@ func (g *Gui) initGrid() {
 	// Layout for screens wider than 100 cells.
 	grid.AddItem(g.lintersItem, 1, 0, 1, 1, 0, 100, true).
 		AddItem(g.sourceFilesItem, 1, 1, 1, 1, 0, 100, false).
-		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 100, false)
+		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 100, false).
+		AddItem(g.naviItem, 2, 0, 1, 4, 0, 0, false)
+
+	g.naviItem.Update(g.lintersItem)
 
 	g.pages = tview.NewPages().
 		AddAndSwitchToPage(mainPageName, grid, true)
@@ -101,6 +106,7 @@ func (g *Gui) prevPanel() {
 // switchPanel switches to focus on the given Primitive.
 func (g *Gui) switchPanel(p tview.Primitive) {
 	g.application.SetFocus(p)
+	g.naviItem.Update(p)
 }
 
 func (g *Gui) switchPage(prev, next string) {
