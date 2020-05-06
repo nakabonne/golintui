@@ -11,6 +11,7 @@ type Config struct {
 	Debug          bool
 	Version        string
 	Commit         string
+	Date           string
 	BuildDate      string
 	BuildSource    string
 	OpenCommandEnv string
@@ -27,12 +28,13 @@ func New(name, version, commit, date, buildSource, executable, openCommandEnv st
 		openCommandEnv = defaultOpenCommandEnv
 	}
 	return &Config{
-		Name:           "",
-		Debug:          true,
-		Version:        "",
-		Commit:         "",
+		Name:           name,
+		Debug:          debuggingFlag,
+		Version:        version,
+		Commit:         commit,
+		Date:           date,
 		BuildDate:      "",
-		BuildSource:    "",
+		BuildSource:    buildSource,
 		Executable:     executable,
 		OpenCommandEnv: openCommandEnv,
 	}, nil
