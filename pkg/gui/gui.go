@@ -121,19 +121,20 @@ func (g *Gui) modal(p tview.Primitive, width, height int) *tview.Grid {
 }
 
 // message shows the given message as a modal.
-func (g *Gui) message(message, doneLabel string, doneFunc func()) {
+func (g *Gui) message(message, doneLabel string) {
 	modal := tview.NewModal().
 		SetText(message).
-		SetBackgroundColor(tcell.ColorBlack).
-		AddButtons([]string{doneLabel}).
-		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
-			if buttonLabel == doneLabel {
-				doneFunc()
-			}
-			g.switchPage(modalPageName, mainPageName)
-		})
+		SetBackgroundColor(tcell.ColorBlack)
 
-	g.pages.AddAndSwitchToPage("modal", g.modal(modal, 150, 60), true).ShowPage(mainPageName)
+	if doneLabel != "" {
+		modal.AddButtons([]string{doneLabel}).
+			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+				if buttonLabel == doneLabel {
+					g.switchPage(modalPageName, mainPageName)
+				}
+			})
+	}
+	g.pages.AddAndSwitchToPage(modalPageName, g.modal(modal, 150, 60), true).ShowPage(mainPageName)
 }
 
 // registerPath adds path to golangci-lint runner as an arg.
@@ -154,7 +155,7 @@ func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 
 func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 	if err := g.runner.DisableLinter(linter.Name()); err != nil {
-		g.message(err.Error(), "Enter", func() {})
+		g.message(err.Error(), "Enter")
 		return
 	}
 	node.SetColor(item.DefaultLinterColor)
