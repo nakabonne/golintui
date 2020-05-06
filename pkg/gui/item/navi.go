@@ -1,6 +1,10 @@
 package item
 
-import "github.com/rivo/tview"
+import (
+	"fmt"
+
+	"github.com/rivo/tview"
+)
 
 type Navi struct {
 	*tview.TextView
@@ -15,16 +19,20 @@ func NewNavi() *Navi {
 }
 
 const (
-	globalNavi = "[aqua::b]r[white]: run, [aqua::b]j[white]: move down, [aqua]k[white]: move up, [aqua]q[white]: quit"
+	globalNavi      = "[aqua]q[white]: quit, [aqua]r[white]: run, [aqua]j[white]: move down, [aqua]k[white]: move up, [aqua]l[white]: next panel, [aqua]h[white]: previous panel"
+	lintersNavi     = "[aqua]space[white]: toggle enabled"
+	sourceFilesNavi = "[aqua]space[white]: toggle selected, [aqua]o[white]: expand directory"
+	resultsNavi     = "[aqua]o[white]: open file"
 )
 
 func (n *Navi) Update(p tview.Primitive) {
 	switch p.(type) {
 	case *Linters:
-		n.SetText(globalNavi)
+		n.SetText(fmt.Sprintf("%s, %s", globalNavi, lintersNavi))
 	case *SourceFiles:
-		n.SetText("")
+		n.SetText(fmt.Sprintf("%s, %s", globalNavi, sourceFilesNavi))
 	case *Results:
+		n.SetText(fmt.Sprintf("%s, %s", globalNavi, resultsNavi))
 	}
 
 }
