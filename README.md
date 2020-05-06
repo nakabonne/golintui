@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/nakabonne/golintui)](/LICENSE)
 
-`golintui` is a TUI tool that helps you run all sorts of linters with ease and organize its results, with the power of [golangci-lint](https://github.com/golangci/golangci-lint).
+`golintui` is a TUI tool that helps you run various kinds of linters with ease and organize its results, with the power of [golangci-lint](https://github.com/golangci/golangci-lint).
 
 ![Screenshot](golintui.gif)
 
