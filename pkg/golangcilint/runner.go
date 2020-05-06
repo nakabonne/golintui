@@ -21,16 +21,11 @@ type Runner struct {
 	// An arg can be a file name, a workingDir, and in addition,
 	// `...` to analyze them recursively.
 	Args []string
-	// Path to config file for golangci-lint.
-	// The Supported formats are yaml, json and toml.
-	//ConfigPath string
-	// A map to indicate which linters are enabled.
-	Linters map[string]Linter
 
 	// Specifies the working directory of golangci-lint
 	workingDir string
 	logger     *logrus.Entry
-	cfg        *config.Config
+	cfg        config.Config
 }
 
 func NewRunner(executable string, args []string, logger *logrus.Entry) (*Runner, error) {
@@ -39,9 +34,9 @@ func NewRunner(executable string, args []string, logger *logrus.Entry) (*Runner,
 		Args:       args,
 		workingDir: ".",
 		logger:     logger,
-		cfg:        config.NewConfig(),
+		cfg:        config.Config{},
 	}
-	err := r.initLinters()
+	err := r.initConfig()
 	return r, err
 }
 
@@ -61,22 +56,6 @@ func (r *Runner) RemoveArgs(arg string) {
 
 // Run executes `golangci-lint run` with its own args and configuration.
 func (r *Runner) Run() ([]Issue, error) {
-	// Prepare a temporary config file to disable all linters.
-	if err := r.cfg.ReadConfig(); err != nil {
-		return nil, err
-	}
-	r.cfg.ClearLinters()
-	b, err := r.cfg.ToYAML()
-	if err != nil {
-		return nil, err
-	}
-	confPath, clean, err := tmpConfigFile(b)
-	if err != nil {
-		return nil, err
-	}
-	defer clean()
-	r.Args = append(r.Args, "--config", confPath)
-
 	outJSON, err := r.run(r.Args)
 	if err != nil {
 		return nil, err
@@ -90,32 +69,32 @@ func (r *Runner) Run() ([]Issue, error) {
 }
 
 // ListLinters returns all linters, with settings about whether to enable or not.
-func (r *Runner) ListLinters() []Linter {
-	res := make([]Linter, 0, len(r.Linters))
-	for _, linter := range r.Linters {
+func (r *Runner) ListLinters() []config.Linter {
+	res := make([]config.Linter, 0, len(r.cfg.Linters))
+	for _, linter := range r.cfg.Linters {
 		res = append(res, linter)
 	}
 	return res
 }
 
 func (r *Runner) EnableLinter(linterName string) {
-	linter, ok := r.Linters[linterName]
+	linter, ok := r.cfg.Linters[linterName]
 	if !ok {
 		r.logger.WithField("linter", linterName).Error("linter not found")
 		return
 	}
 	linter.Enable()
-	r.Linters[linterName] = linter
+	r.cfg.Linters[linterName] = linter
 }
 
 func (r *Runner) DisableLinter(linterName string) {
-	linter, ok := r.Linters[linterName]
+	linter, ok := r.cfg.Linters[linterName]
 	if !ok {
 		r.logger.WithField("linter", linterName).Error("linter not found")
 		return
 	}
 	linter.Disable()
-	r.Linters[linterName] = linter
+	r.cfg.Linters[linterName] = linter
 }
 
 func (r *Runner) GetVersion() string {
@@ -132,7 +111,7 @@ func (r *Runner) run(targets []string) ([]byte, error) {
 
 	// Specify enabled linters
 	linters := []string{}
-	for _, l := range r.Linters {
+	for _, l := range r.cfg.Linters {
 		if l.Enabled() {
 			linters = append(linters, "-E", l.Name())
 		}
@@ -159,15 +138,16 @@ func (r *Runner) execute(args ...string) ([]byte, error) {
 	return cmd.CombinedOutput()
 }
 
-// initLinters sets linters applied for the current directory.
-func (r *Runner) initLinters() error {
+// initConfig sets config of linters applied for the current directory.
+// First up, run golangci-lint against a temporary Go project to see which linter is enabled or not.
+// Then start to read the configuration file.
+func (r *Runner) initConfig() error {
 	tmpDir, cleaner, err := tmpProject()
 	if err != nil {
 		return err
 	}
 	defer cleaner()
 
-	// Run against tmp project to fetch linters information.
 	outJSON, err := r.run([]string{fmt.Sprintf("./%s/%s", tmpDir, tmpGoFileName)})
 	if err != nil {
 		return err
@@ -181,10 +161,12 @@ func (r *Runner) initLinters() error {
 	if res.Report == nil {
 		return errors.New("wrong result was returned from golangci-lint")
 	}
-	linters := NewLinters(res.Report.Linters)
-	r.Linters = make(map[string]Linter, len(linters))
+	linters := config.NewLinters(res.Report.Linters)
+	r.cfg.Linters = make(map[string]config.Linter, len(linters))
 	for _, l := range linters {
-		r.Linters[l.Name()] = l
+		r.cfg.Linters[l.Name()] = l
 	}
-	return nil
+
+	reader := config.NewReader(&r.cfg, r.logger)
+	return reader.Read()
 }

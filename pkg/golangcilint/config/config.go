@@ -1,40 +1,11 @@
 package config
 
-import (
-	"fmt"
-
-	gconfig "github.com/golangci/golangci-lint/pkg/config"
-	"github.com/golangci/golangci-lint/pkg/logutils"
-	"github.com/golangci/golangci-lint/pkg/report"
-	"gopkg.in/yaml.v2"
-)
-
-// Config wraps golagnci-lint's Config
+// Config is part of configuration for golangci-lint, especially regarding linters.
 type Config struct {
-	config *gconfig.Config
-}
+	DisableAll bool
+	// NOTE: Deprecated, soon be removed from golangci-lint.
+	EnableAll bool
 
-func NewConfig() *Config {
-	return &Config{
-		config: gconfig.NewDefault(),
-	}
-}
-
-// ReadConfig parses user's golangci-lint config and set its pointer.
-func (c *Config) ReadConfig() error {
-	// TODO: Use other logger
-	log := report.NewLogWrapper(logutils.NewStderrLog(""), &report.Data{})
-	reader := gconfig.NewFileReader(c.config, nil, log)
-	if err := reader.Read(); err != nil {
-		return fmt.Errorf("can't read config: %w", err)
-	}
-	return nil
-}
-
-func (c *Config) ClearLinters() {
-	c.config.Linters = gconfig.Linters{}
-}
-
-func (c *Config) ToYAML() ([]byte, error) {
-	return yaml.Marshal(c.config)
+	// A map to indicate which linters are enabled.
+	Linters map[string]Linter
 }

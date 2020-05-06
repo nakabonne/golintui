@@ -3,10 +3,10 @@ package item
 import (
 	"sort"
 
+	"github.com/nakabonne/golintui/pkg/golangcilint/config"
+
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
-
-	"github.com/nakabonne/golintui/pkg/golangcilint"
 )
 
 const (
@@ -18,7 +18,7 @@ type Linters struct {
 	*tview.TreeView
 }
 
-func NewLinters(linters []golangcilint.Linter) *Linters {
+func NewLinters(linters []config.Linter) *Linters {
 	l := &Linters{
 		TreeView: tview.NewTreeView(),
 	}
@@ -32,9 +32,9 @@ func NewLinters(linters []golangcilint.Linter) *Linters {
 	return l
 }
 
-func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, *golangcilint.Linter)) {
+func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, *config.Linter)) {
 	l.SetSelectedFunc(func(node *tview.TreeNode) {
-		ref, ok := node.GetReference().(golangcilint.Linter)
+		ref, ok := node.GetReference().(config.Linter)
 		if !ok {
 			return
 		}
@@ -58,7 +58,7 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectA
 	})
 }
 
-func (l *Linters) addChildren(node *tview.TreeNode, linters []golangcilint.Linter) {
+func (l *Linters) addChildren(node *tview.TreeNode, linters []config.Linter) {
 	sort.SliceStable(linters, func(i, j int) bool { return linters[i].Name() < linters[j].Name() })
 	for _, linter := range linters {
 		child := tview.NewTreeNode(linter.Name()).

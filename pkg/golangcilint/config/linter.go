@@ -1,4 +1,4 @@
-package golangcilint
+package config
 
 import (
 	"github.com/golangci/golangci-lint/pkg/report"
@@ -6,15 +6,20 @@ import (
 
 // Linter represents a linter available on golangci-lint.
 type Linter struct {
-	name    string
-	enabled bool
+	name            string
+	enabled         bool
+	enabledByConfig bool
 }
 
 // NewLinters converts LinterData represented internally into the opinionated Linter.
 func NewLinters(linters []report.LinterData) []Linter {
 	res := make([]Linter, 0, len(linters))
 	for _, l := range linters {
-		res = append(res, Linter{name: l.Name, enabled: l.Enabled})
+		res = append(res, Linter{
+			name:            l.Name,
+			enabled:         l.Enabled,
+			enabledByConfig: l.Enabled,
+		})
 	}
 	return res
 }
@@ -25,6 +30,10 @@ func (l *Linter) Name() string {
 
 func (l *Linter) Enabled() bool {
 	return l.enabled
+}
+
+func (l *Linter) EnabledByConfig() bool {
+	return l.enabledByConfig
 }
 
 // Enable makes itself enabled.

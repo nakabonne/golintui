@@ -9,5 +9,6 @@ require (
 	github.com/rivo/tview v0.0.0-20200414130344-8e06c826b3a5
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sirupsen/logrus v1.5.0
+	github.com/spf13/viper v1.6.1
 	gopkg.in/yaml.v2 v2.2.8
 )

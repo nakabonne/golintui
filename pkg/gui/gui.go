@@ -3,6 +3,8 @@ package gui
 import (
 	"github.com/sirupsen/logrus"
 
+	"github.com/nakabonne/golintui/pkg/golangcilint/config"
+
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/editor"
@@ -101,12 +103,12 @@ func (g *Gui) unregisterPath(node *tview.TreeNode, path string) {
 	node.SetColor(item.DefaultDirColor)
 }
 
-func (g *Gui) enableLinter(node *tview.TreeNode, linter *golangcilint.Linter) {
+func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 	g.runner.EnableLinter(linter.Name())
 	node.SetColor(item.EnabledLinterColor)
 }
 
-func (g *Gui) disableLinter(node *tview.TreeNode, linter *golangcilint.Linter) {
+func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 	g.runner.DisableLinter(linter.Name())
 	node.SetColor(item.DefaultLinterColor)
 }
