@@ -22,8 +22,8 @@ var (
 		fmt.Fprintln(os.Stderr, "usage: golintui [<flag> ...]")
 		flagSet.PrintDefaults()
 	}
-	// TODO: Populate by goreleaser during build
-	version = "v0.1.0"
+	// Automatically populated by goreleaser during build
+	version = ""
 	commit  = ""
 	date    = ""
 )
