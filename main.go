@@ -60,12 +60,8 @@ func (c *cli) run() int {
 		fmt.Fprintf(c.stderr, "version=%s, os=%s, arch=%s\n", version, runtime.GOOS, runtime.GOARCH)
 		return 0
 	}
-	conf, err := config.New("golintui", version, commit, date, "", c.executable, "", c.debugFlag)
-	if err != nil {
-		fmt.Fprintln(c.stderr, err.Error())
-		return 1
-	}
 
+	conf := config.New("golintui", version, commit, date, "", c.executable, "", c.debugFlag)
 	logger := logger.NewLogger(conf)
 	runner, err := golangcilint.NewRunner(conf.Executable, []string{}, logger)
 	if err != nil {
@@ -73,12 +69,12 @@ func (c *cli) run() int {
 		return 1
 	}
 	editor := editor.NewEditor(conf.OpenCommandEnv, logger)
-
 	g, err := gui.New(logger, runner, editor)
 	if err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
 	}
+
 	if err := g.Run(); err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1

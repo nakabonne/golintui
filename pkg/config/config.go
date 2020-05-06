@@ -11,7 +11,6 @@ type Config struct {
 	Debug          bool
 	Version        string
 	Commit         string
-	Date           string
 	BuildDate      string
 	BuildSource    string
 	OpenCommandEnv string
@@ -20,7 +19,7 @@ type Config struct {
 	Executable string
 }
 
-func New(name, version, commit, date, buildSource, executable, openCommandEnv string, debuggingFlag bool) (*Config, error) {
+func New(name, version, commit, date, buildSource, executable, openCommandEnv string, debuggingFlag bool) *Config {
 	if executable == "" {
 		executable = defaultExecutable
 	}
@@ -32,12 +31,11 @@ func New(name, version, commit, date, buildSource, executable, openCommandEnv st
 		Debug:          debuggingFlag,
 		Version:        version,
 		Commit:         commit,
-		Date:           date,
-		BuildDate:      "",
+		BuildDate:      date,
 		BuildSource:    buildSource,
 		Executable:     executable,
 		OpenCommandEnv: openCommandEnv,
-	}, nil
+	}
 }
 
 func (c *Config) GetDebug() bool {
