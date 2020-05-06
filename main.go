@@ -8,8 +8,11 @@ import (
 
 	flag "github.com/spf13/pflag"
 
-	"github.com/nakabonne/golintui/pkg/app"
 	"github.com/nakabonne/golintui/pkg/config"
+	"github.com/nakabonne/golintui/pkg/editor"
+	"github.com/nakabonne/golintui/pkg/golangcilint"
+	"github.com/nakabonne/golintui/pkg/gui"
+	"github.com/nakabonne/golintui/pkg/logger"
 )
 
 var (
@@ -57,18 +60,26 @@ func (c *cli) run() int {
 		fmt.Fprintf(c.stderr, "version=%s, os=%s, arch=%s\n", version, runtime.GOOS, runtime.GOARCH)
 		return 0
 	}
-	appConfig, err := config.New("golintui", version, commit, date, "", c.executable, "", c.debugFlag)
-	if err != nil {
-		fmt.Fprintln(c.stderr, err.Error())
-		return 1
-	}
-	a, err := app.New(appConfig)
+	conf, err := config.New("golintui", version, commit, date, "", c.executable, "", c.debugFlag)
 	if err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
 	}
 
-	if err := a.Run(); err != nil {
+	logger := logger.NewLogger(conf)
+	runner, err := golangcilint.NewRunner(conf.Executable, []string{}, logger)
+	if err != nil {
+		fmt.Fprintln(c.stderr, err.Error())
+		return 1
+	}
+	editor := editor.NewEditor(conf.OpenCommandEnv, logger)
+
+	g, err := gui.New(logger, runner, editor)
+	if err != nil {
+		fmt.Fprintln(c.stderr, err.Error())
+		return 1
+	}
+	if err := g.Run(); err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
 	}

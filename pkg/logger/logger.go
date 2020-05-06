@@ -1,4 +1,4 @@
-package app
+package logger
 
 import (
 	"io/ioutil"
@@ -11,7 +11,7 @@ import (
 	"github.com/nakabonne/golintui/pkg/config"
 )
 
-func newLogger(conf *config.Config) *logrus.Entry {
+func NewLogger(conf *config.Config) *logrus.Entry {
 	var log *logrus.Logger
 	if conf.GetDebug() {
 		log = newDevelopmentLogger()
@@ -32,6 +32,7 @@ func newLogger(conf *config.Config) *logrus.Entry {
 func newDevelopmentLogger() *logrus.Logger {
 	log := logrus.New()
 	log.SetLevel(logrus.TraceLevel)
+	// TODO: Use regular directories for configuration files by using https://github.com/shibukawa/configdir.
 	file, err := os.OpenFile("development.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal("unable to log to file")
