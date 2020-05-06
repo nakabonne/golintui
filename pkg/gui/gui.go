@@ -71,6 +71,12 @@ func (g *Gui) initGrid() {
 		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 100, false).
 		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
 
+	// Layout for screens narrower than 100 cells.
+	grid.AddItem(g.lintersItem, 0, 0, 1, 1, 0, 0, true).
+		AddItem(g.sourceFilesItem, 0, 1, 1, 1, 0, 0, false).
+		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 0, false).
+		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
+
 	g.naviItem.Update(g.lintersItem)
 
 	g.pages = tview.NewPages().
