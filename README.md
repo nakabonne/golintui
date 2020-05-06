@@ -1,6 +1,10 @@
 # golintui
 
+[![License](https://img.shields.io/github/license/nakabonne/golintui)](/LICENSE)
+
 `golintui` is a TUI tool that helps you run all sorts of linters with ease and organize its results, with the power of [golangci-lint](https://github.com/golangci/golangci-lint).
+
+![Screenshot](golintui.gif)
 
 ## Cool features
 
@@ -41,7 +45,7 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
 **Global**
 
 <pre>
-  <kbd>r</kbd>: run selected linters against the selected directories.
+  <kbd>r</kbd>: run selected linters against the selected directories
   <kbd>q</kbd>: quit
   <kbd>l</kbd>: next panel
   <kbd>h</kbd>: previous panel
@@ -52,7 +56,7 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
 **Linters Panel**
 
 <pre>
-  <kbd>space</kbd>/<kbd>enter</kbd>: toggle enabled
+  <kbd>space</kbd>: toggle enabled
 </pre>
 
 ##### Note that for users who specify `disable-all` in the config file for golangci-lint, it is impossible to disable linters that are enabled in it.
@@ -60,14 +64,14 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
 **Source File Panel**
 
 <pre>
-  <kbd>space</kbd>/<kbd>enter</kbd>: toggle selected
+  <kbd>space</kbd>: toggle selected
   <kbd>o</kbd>: expand directory
 </pre>
 
 **Results Panel**
 
 <pre>
-  <kbd>o</kbd>: open a file with the reported line.
+  <kbd>o</kbd>: open a file with the reported line
 </pre>
 
 ## Settings
