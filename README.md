@@ -55,6 +55,8 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
   <kbd>space</kbd>/<kbd>enter</kbd>: toggle enabled
 </pre>
 
+Note that for users who specify disable-all in the config file for golangci-lint, it is impossible to disable linters that are enabled in it.
+
 **Source File Panel**
 
 <pre>
@@ -65,7 +67,7 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
 **Results Panel**
 
 <pre>
-  <kbd>o</kbd>: open a file at a specific line
+  <kbd>o</kbd>: open a file with the reported line.
 </pre>
 
 ## Settings
