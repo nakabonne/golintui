@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"github.com/gdamore/tcell"
 	"github.com/sirupsen/logrus"
 
 	"github.com/nakabonne/golintui/pkg/golangcilint/config"
@@ -10,6 +11,11 @@ import (
 	"github.com/nakabonne/golintui/pkg/editor"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
 	"github.com/nakabonne/golintui/pkg/gui/item"
+)
+
+const (
+	mainPageName  = "main"
+	modalPageName = "modal"
 )
 
 // Gui wraps the tview application which handles rendering and events.
@@ -65,7 +71,7 @@ func (g *Gui) initGrid() {
 		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 100, false)
 
 	g.pages = tview.NewPages().
-		AddAndSwitchToPage("main", grid, true)
+		AddAndSwitchToPage(mainPageName, grid, true)
 	g.application.SetRoot(g.pages, true)
 }
 
@@ -92,6 +98,38 @@ func (g *Gui) prevPanel() {
 	}
 }
 
+// switchPanel switches to focus on the given Primitive.
+func (g *Gui) switchPanel(p tview.Primitive) {
+	g.application.SetFocus(p)
+}
+
+func (g *Gui) switchPage(prev, next string) {
+	g.pages.RemovePage(prev).ShowPage(next)
+}
+
+func (g *Gui) modal(p tview.Primitive, width, height int) *tview.Grid {
+	return tview.NewGrid().
+		SetColumns(0, width, 0).
+		SetRows(0, height, 0).
+		AddItem(p, 1, 1, 1, 1, 0, 0, true)
+}
+
+// message shows the given message as a modal.
+func (g *Gui) message(message, doneLabel string, doneFunc func()) {
+	modal := tview.NewModal().
+		SetText(message).
+		SetBackgroundColor(tcell.ColorBlack).
+		AddButtons([]string{doneLabel}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			if buttonLabel == doneLabel {
+				doneFunc()
+			}
+			g.switchPage(modalPageName, mainPageName)
+		})
+
+	g.pages.AddAndSwitchToPage("modal", g.modal(modal, 150, 60), true).ShowPage(mainPageName)
+}
+
 // registerPath adds path to golangci-lint runner as an arg.
 func (g *Gui) registerPath(node *tview.TreeNode, path string) {
 	g.runner.AddArgs(path)
@@ -108,17 +146,12 @@ func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 	node.SetColor(item.EnabledLinterColor)
 }
 
-func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) error {
+func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 	if err := g.runner.DisableLinter(linter.Name()); err != nil {
-		return err
+		g.message(err.Error(), "Enter", func() {})
+		return
 	}
 	node.SetColor(item.DefaultLinterColor)
-	return nil
-}
-
-// switchPanel switches to focus on the given Primitive.
-func (g *Gui) switchPanel(p tview.Primitive) {
-	g.application.SetFocus(p)
 }
 
 // openFile temporarily suspends this application and open file with the editor as a sub process.

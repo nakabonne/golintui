@@ -94,7 +94,7 @@ func (r *Runner) DisableLinter(linterName string) error {
 		return nil
 	}
 	if linter.EnabledByConfig() && r.cfg.DisableAll {
-		return fmt.Errorf("can't disable '%s' linter because 'disable-all' is specified in the config file", linter.Name())
+		return fmt.Errorf("can't disable '%s' linter because 'disable-all=true' is specified in the config file", linter.Name())
 	}
 	linter.Disable()
 	r.cfg.Linters[linterName] = linter

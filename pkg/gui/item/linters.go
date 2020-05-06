@@ -3,8 +3,6 @@ package item
 import (
 	"sort"
 
-	"github.com/k0kubun/pp"
-
 	"github.com/nakabonne/golintui/pkg/golangcilint/config"
 
 	"github.com/gdamore/tcell"
@@ -34,7 +32,7 @@ func NewLinters(linters []config.Linter) *Linters {
 	return l
 }
 
-func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction func(*tview.TreeNode, *config.Linter), unselectAction func(*tview.TreeNode, *config.Linter) error) {
+func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectAction, unselectAction func(*tview.TreeNode, *config.Linter)) {
 	l.SetSelectedFunc(func(node *tview.TreeNode) {
 		ref, ok := node.GetReference().(config.Linter)
 		if !ok {
@@ -43,9 +41,7 @@ func (l *Linters) SetKeybinds(globalKeybind func(event *tcell.EventKey), selectA
 		// TODO: Use ref.Enable() to check if enabled.
 		//    For that, be sure to populate a pointer to linter to the reference.
 		if node.GetColor() == EnabledLinterColor {
-			if err := unselectAction(node, &ref); err != nil {
-				pp.Println(err) // TODO: Replace popup
-			}
+			unselectAction(node, &ref)
 		} else {
 			selectAction(node, &ref)
 		}
