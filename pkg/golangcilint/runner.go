@@ -87,14 +87,18 @@ func (r *Runner) EnableLinter(linterName string) {
 	r.cfg.Linters[linterName] = linter
 }
 
-func (r *Runner) DisableLinter(linterName string) {
+func (r *Runner) DisableLinter(linterName string) error {
 	linter, ok := r.cfg.Linters[linterName]
 	if !ok {
 		r.logger.WithField("linter", linterName).Error("linter not found")
-		return
+		return nil
+	}
+	if linter.EnabledByConfig() && r.cfg.DisableAll {
+		return fmt.Errorf("can't disable '%s' linter because 'disable-all' is specified in the config file", linter.Name())
 	}
 	linter.Disable()
 	r.cfg.Linters[linterName] = linter
+	return nil
 }
 
 func (r *Runner) GetVersion() string {

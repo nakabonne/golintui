@@ -108,9 +108,12 @@ func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 	node.SetColor(item.EnabledLinterColor)
 }
 
-func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
-	g.runner.DisableLinter(linter.Name())
+func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) error {
+	if err := g.runner.DisableLinter(linter.Name()); err != nil {
+		return err
+	}
 	node.SetColor(item.DefaultLinterColor)
+	return nil
 }
 
 // switchPanel switches to focus on the given Primitive.
