@@ -21,6 +21,10 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 	}
 
 	switch event.Rune() {
+	case 'l':
+		g.nextPanel()
+	case 'h':
+		g.prevPanel()
 	case 'q':
 		g.application.Stop()
 	case 'r':
