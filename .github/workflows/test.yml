@@ -1,4 +1,14 @@
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - master
+    paths-ignore:
+    - 'README.md'
+  pull_request:
+    branches:
+    - master
+    paths-ignore:
+    - 'README.md'
 name: main
 jobs:
   test:
