@@ -43,6 +43,29 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
 <pre>
   <kbd>r</kbd>: run selected linters against the selected directories.
   <kbd>q</kbd>: quit
+  <kbd>l</kbd>: next panel
+  <kbd>h</kbd>: previous panel
+  <kbd>j</kbd>: move down
+  <kbd>k</kbd>: move up
+</pre>
+
+**Linters Panel**
+
+<pre>
+  <kbd>space</kbd>/<kbd>enter</kbd>: toggle enabled
+</pre>
+
+**Source File Panel**
+
+<pre>
+  <kbd>space</kbd>/<kbd>enter</kbd>: toggle selected
+  <kbd>o</kbd>: expand directory
+</pre>
+
+**Results Panel**
+
+<pre>
+  <kbd>o</kbd>: open a file at a specific line
 </pre>
 
 ## Settings
@@ -62,4 +85,4 @@ export GOLINTUI_OPEN_COMMAND="code -r"
 - emacs
 - VSCode
 
-Please let me know how to open a file by specifying a line if the editor you're used to is missing.
+Please let me know how to open a file at a specific line if the editor you're used to is missing.
