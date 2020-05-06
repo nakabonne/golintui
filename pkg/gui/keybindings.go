@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"fmt"
+
 	"github.com/gdamore/tcell"
 )
 
@@ -22,7 +24,8 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 	case 'q':
 		g.application.Stop()
 	case 'r':
-		close := g.showLoading("running linters...")
+		paths := g.runner.ArgsString()
+		close := g.showLoading("running linters...", fmt.Sprintf("given paths: %s", paths))
 
 		go func() {
 			issues, err := g.runner.Run()

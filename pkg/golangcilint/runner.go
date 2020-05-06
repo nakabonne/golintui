@@ -110,6 +110,17 @@ func (r *Runner) GetVersion() string {
 	return string(version)
 }
 
+func (r *Runner) ArgsString() string {
+	paths := ""
+	if len(r.Args) == 0 {
+		return "./..."
+	}
+	for _, arg := range r.Args {
+		paths += arg + ", "
+	}
+	return paths
+}
+
 func (r *Runner) run(targets []string) ([]byte, error) {
 	args := []string{"run", "--out-format=json", "--issues-exit-code=0"}
 
