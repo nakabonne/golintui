@@ -120,7 +120,7 @@ func (g *Gui) switchPage(prev, next string) {
 // showWarn shows the given message as a modal.
 // doneLabel param is used for the name of button to close.
 func (g *Gui) showWarn(message, doneLabel string) {
-	g.showModal(message, doneLabel, func() { g.switchPage(modalPageName, mainPageName) }, tcell.ColorBlack, tcell.ColorBlack, tcell.ColorWhite)
+	g.showModal(message, doneLabel, func() { g.switchPage(modalPageName, mainPageName) }, tcell.ColorBlack, tcell.ColorLime, tcell.ColorBlack)
 }
 
 // showLoading shows the given message as a modal.
@@ -175,7 +175,7 @@ func (g *Gui) enableLinter(node *tview.TreeNode, linter *config.Linter) {
 
 func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 	if err := g.runner.DisableLinter(linter.Name()); err != nil {
-		g.showWarn(err.Error(), "Enter")
+		g.showWarn(err.Error(), "Press Enter to close")
 		return
 	}
 	node.SetColor(item.DefaultLinterColor)

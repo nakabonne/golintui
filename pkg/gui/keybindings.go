@@ -31,7 +31,7 @@ func (g *Gui) grobalKeybind(event *tcell.EventKey) {
 			issues, err := g.runner.Run()
 			close()
 			if err != nil {
-				g.showWarn(err.Error(), "Close")
+				g.showWarn(err.Error(), "Press Enter to close")
 				g.application.Draw()
 				return
 			}
