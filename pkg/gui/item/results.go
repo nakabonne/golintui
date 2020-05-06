@@ -2,8 +2,8 @@ package item
 
 import (
 	"github.com/gdamore/tcell"
-	"github.com/k0kubun/pp"
 	"github.com/rivo/tview"
+	"github.com/sirupsen/logrus"
 
 	"github.com/nakabonne/golintui/pkg/golangcilint"
 )
@@ -11,11 +11,13 @@ import (
 type Results struct {
 	*tview.TreeView
 	latestIssues []golangcilint.Issue
+	logger       *logrus.Entry
 }
 
-func NewResults() *Results {
+func NewResults(logger *logrus.Entry) *Results {
 	b := &Results{
 		TreeView: tview.NewTreeView(),
+		logger:   logger,
 	}
 	b.SetBorder(true).SetTitle("Results").SetTitleAlign(tview.AlignLeft)
 	b.ShowMessage("Press `r` to run linters")
@@ -30,7 +32,7 @@ func (r *Results) SetKeybinds(globalKeybind func(event *tcell.EventKey), openFil
 			switch ref := node.GetReference().(type) {
 			case golangcilint.Issue:
 				if err := openFile(ref.FilePath(), ref.Line(), ref.Column()); err != nil {
-					pp.Println(err) // TODO: Replace with logrus
+					r.logger.Error(err.Error())
 					return event
 				}
 				return event

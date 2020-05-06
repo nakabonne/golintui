@@ -39,8 +39,8 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Edit
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(linters),
-		sourceFilesItem: item.NewSourceFiles("."),
-		resultsItem:     item.NewResults(),
+		sourceFilesItem: item.NewSourceFiles(logger, "."),
+		resultsItem:     item.NewResults(logger),
 		naviItem:        item.NewNavi(),
 		runner:          runner,
 		logger:          logger,

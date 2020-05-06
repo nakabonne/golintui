@@ -6,6 +6,7 @@ import (
 
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -15,11 +16,13 @@ const (
 
 type SourceFiles struct {
 	*tview.TreeView
+	logger *logrus.Entry
 }
 
-func NewSourceFiles(rootDir string) *SourceFiles {
+func NewSourceFiles(logger *logrus.Entry, rootDir string) *SourceFiles {
 	s := &SourceFiles{
 		TreeView: tview.NewTreeView(),
+		logger:   logger,
 	}
 
 	root := tview.NewTreeNode(rootDir).
@@ -89,7 +92,7 @@ func (s *SourceFiles) SwitchToggle(node *tview.TreeNode) {
 		// Load and show files in this directory.
 		path := reference.(string)
 		if err := s.addChildren(node, path); err != nil {
-			panic(err) // TODO: Emit log instead of panic
+			s.logger.Error(err)
 		}
 	} else {
 		// Collapse if visible, expand if collapsed.
