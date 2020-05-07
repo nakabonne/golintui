@@ -4,6 +4,15 @@ before:
 builds:
 - main: .
   binary: golintui
+  goos:
+    - freebsd
+    - darwin
+    - linux
+  goarch:
+    - amd64
+    - arm
+    - arm64
+    - 386
   env:
   - CGO_ENABLED=0
   ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
@@ -11,15 +20,13 @@ archives:
 - replacements:
     darwin: Darwin
     linux: Linux
-    windows: Windows
-    386: i386
+    386: 32-bit
     amd64: x86_64
 checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
-  sort: asc
   filters:
     exclude:
     - '^test:'
