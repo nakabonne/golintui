@@ -16,6 +16,10 @@
 
 ## Installation
 
+**Binary Releases**
+
+For Mac OS or Linux, you can download a binary release [here](https://github.com/nakabonne/golintui/releases).
+
 **Source**
 
 ```bash
