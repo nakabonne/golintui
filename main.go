@@ -23,7 +23,7 @@ var (
 		flagSet.PrintDefaults()
 	}
 	// Automatically populated by goreleaser during build
-	version = ""
+	version = "unversioned"
 	commit  = ""
 	date    = ""
 )
