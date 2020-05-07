@@ -15,7 +15,7 @@ import (
 const globOperator = "/..."
 
 type Runner struct {
-	// Path to a golangci-lint executable.
+	// Absolute path to the golangci-lint executable.
 	Executable string
 	// Args given to `golangci-lint run`.
 	// An arg can be a file name, a workingDir, and in addition,

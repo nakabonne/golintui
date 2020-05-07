@@ -43,7 +43,7 @@ func main() {
 	}
 	flagSet.BoolVarP(&c.versionFlag, "version", "v", false, "print the current version")
 	flagSet.BoolVar(&c.debugFlag, "debug", false, "run in debug mode")
-	flagSet.StringVarP(&c.executable, "executable", "e", "", "path to golangci-lint executable")
+	flagSet.StringVarP(&c.executable, "executable", "e", "", "absolute path to the golangci-lint executable")
 	flagSet.Usage = usage
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		if err != flag.ErrHelp {

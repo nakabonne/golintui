@@ -15,7 +15,7 @@ type Config struct {
 	BuildSource    string
 	OpenCommandEnv string
 
-	// Path to a golangci-lint executable.
+	// Absolute path to a golangci-lint executable.
 	Executable string
 }
 
