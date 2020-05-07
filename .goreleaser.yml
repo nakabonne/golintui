@@ -30,3 +30,10 @@ changelog:
   filters:
     exclude:
     - '^test:'
+
+brews:
+  - github:
+      owner: nakabonne
+      name: homebrew-golintui
+    homepage: 'https://github.com/nakabonne/golintui'
+    description: 'A simple terminal UI for golangci-lint'
