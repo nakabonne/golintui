@@ -20,6 +20,12 @@
 
 For Mac OS or Linux, you can download a binary release [here](https://github.com/nakabonne/golintui/releases).
 
+**Homebrew**
+
+```
+brew install nakabonne/golintui/golintui
+```
+
 **Source**
 
 ```bash
