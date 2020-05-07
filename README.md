@@ -1,6 +1,6 @@
 # golintui
 
-[![License](https://img.shields.io/github/license/nakabonne/golintui)](/LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 `golintui` is a TUI tool that helps you run various kinds of linters with ease and organize its results, with the power of [golangci-lint](https://github.com/golangci/golangci-lint).
 
