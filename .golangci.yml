@@ -1,3 +1,5 @@
+run:
+  issues-exit-code: 0
 
 linters:
   disable-all: true
