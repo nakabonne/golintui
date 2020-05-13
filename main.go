@@ -24,8 +24,8 @@ var (
 	}
 	// Automatically populated by goreleaser during build
 	version = "unversioned"
-	commit  = ""
-	date    = ""
+	commit  = "?"
+	date    = "?"
 )
 
 type cli struct {
@@ -57,7 +57,7 @@ func main() {
 
 func (c *cli) run() int {
 	if c.versionFlag {
-		fmt.Fprintf(c.stderr, "version=%s, os=%s, arch=%s\n", version, runtime.GOOS, runtime.GOARCH)
+		fmt.Fprintf(c.stderr, "version=%s, commit=%s, buildDate=%s, os=%s, arch=%s\n", version, commit, date, runtime.GOOS, runtime.GOARCH)
 		return 0
 	}
 
