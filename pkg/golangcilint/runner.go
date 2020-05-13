@@ -116,7 +116,7 @@ func (r *Runner) ArgsString() string {
 		return "./..."
 	}
 	for _, arg := range r.Args {
-		paths += arg + ", "
+		paths += arg + " "
 	}
 	return paths
 }
