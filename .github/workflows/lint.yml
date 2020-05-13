@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - 'README.md'
+      - '.github/'
 jobs:
   golangci:
     name: lint
