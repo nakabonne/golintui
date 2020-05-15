@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/k0kubun/pp"
-
 	"github.com/sirupsen/logrus"
 
 	"github.com/nakabonne/golintui/pkg/config"
