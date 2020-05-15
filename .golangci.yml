@@ -65,15 +65,6 @@ linters-settings:
       mnd:
         # don't include the "operation" and "assign"
         checks: argument,case,condition,return
-  govet:
-    check-shadowing: true
-    settings:
-      printf:
-        funcs:
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
-          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
   maligned:
     suggest-new: true
   misspell:
