@@ -1,5 +1,10 @@
 package config
 
+import (
+	"os"
+	"path/filepath"
+)
+
 const (
 	defaultExecutable     = "golangci-lint"
 	defaultOpenCommandEnv = "GOLINTUI_OPEN_COMMAND"
@@ -14,18 +19,27 @@ type Config struct {
 	BuildDate      string
 	BuildSource    string
 	OpenCommandEnv string
+	CfgDir         string
 
 	// Absolute path to a golangci-lint executable.
 	Executable string
 }
 
-func New(name, version, commit, date, buildSource, executable, openCommandEnv string, debuggingFlag bool) *Config {
+func New(name, version, commit, date, buildSource, executable, openCommandEnv, cfgDir string, debuggingFlag bool) *Config {
 	if executable == "" {
 		executable = defaultExecutable
 	}
 	if openCommandEnv == "" {
 		openCommandEnv = defaultOpenCommandEnv
 	}
+	if cfgDir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			home = "~"
+		}
+		cfgDir = filepath.Join(home, ".config", "golintui")
+	}
+
 	return &Config{
 		Name:           name,
 		Debug:          debuggingFlag,
@@ -35,6 +49,7 @@ func New(name, version, commit, date, buildSource, executable, openCommandEnv st
 		BuildSource:    buildSource,
 		Executable:     executable,
 		OpenCommandEnv: openCommandEnv,
+		CfgDir:         cfgDir,
 	}
 }
 

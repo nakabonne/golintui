@@ -1,8 +1,10 @@
 package logger
 
 import (
+	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/k0kubun/pp"
 	"github.com/sirupsen/logrus"
@@ -10,40 +12,48 @@ import (
 	"github.com/nakabonne/golintui/pkg/config"
 )
 
-func NewLogger(conf *config.Config) *logrus.Entry {
+func NewLogger(cfg *config.Config, w io.Writer) *logrus.Entry {
 	var log *logrus.Logger
-	if conf.GetDebug() {
-		log = newDevelopmentLogger()
+	if cfg.GetDebug() {
+		log = newLogger(cfg.CfgDir, w)
 	} else {
-		log = newProductionLogger()
+		log = newNopLogger()
 	}
 
 	log.Formatter = &logrus.JSONFormatter{}
-
-	return log.WithFields(logrus.Fields{
-		"debug":     conf.GetDebug(),
-		"version":   conf.GetVersion(),
-		"commit":    conf.GetCommit(),
-		"buildDate": conf.GetBuildDate(),
+	l := log.WithFields(logrus.Fields{
+		"debug":     cfg.GetDebug(),
+		"version":   cfg.GetVersion(),
+		"commit":    cfg.GetCommit(),
+		"buildDate": cfg.GetBuildDate(),
 	})
+	l.Trace("successfully generated logger")
+	return l
 }
 
-func newDevelopmentLogger() *logrus.Logger {
+func newLogger(dir string, w io.Writer) *logrus.Logger {
+	if w == nil {
+		err := os.MkdirAll(dir, 0766)
+		if err != nil {
+			panic(err)
+		}
+		w, err = os.OpenFile(filepath.Join(dir, "debug.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	log := logrus.New()
 	log.SetLevel(logrus.TraceLevel)
-	// TODO: Use regular directories for configuration files by using https://github.com/shibukawa/configdir.
-	file, err := os.OpenFile("development.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal("unable to log to file")
-	}
-	log.SetOutput(file)
-	pp.SetDefaultOutput(log.Out)
+	log.SetOutput(w)
+	pp.SetDefaultOutput(w)
 	return log
 }
 
-func newProductionLogger() *logrus.Logger {
+// Generates a logger that doesn't anything.
+func newNopLogger() *logrus.Logger {
 	log := logrus.New()
-	log.Out = ioutil.Discard
 	log.SetLevel(logrus.ErrorLevel)
+	log.SetOutput(ioutil.Discard)
 	return log
 }

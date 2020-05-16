@@ -61,8 +61,8 @@ func (c *cli) run() int {
 		return 0
 	}
 
-	conf := config.New("golintui", version, commit, date, "", c.executable, "", c.debugFlag)
-	logger := logger.NewLogger(conf)
+	conf := config.New("golintui", version, commit, date, "", c.executable, "", "", c.debugFlag)
+	logger := logger.NewLogger(conf, nil)
 	runner, err := golangcilint.NewRunner(conf.Executable, []string{}, logger)
 	if err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
