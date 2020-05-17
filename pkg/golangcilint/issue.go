@@ -44,3 +44,10 @@ func (i *Issue) Line() int {
 func (i *Issue) Column() int {
 	return i.issue.Column()
 }
+
+func (i *Issue) SourceLine() string {
+	if len(i.issue.SourceLines) < 1 {
+		return ""
+	}
+	return i.issue.SourceLines[0]
+}
