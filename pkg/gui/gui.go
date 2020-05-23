@@ -4,12 +4,12 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/sirupsen/logrus"
 
-	"github.com/nakabonne/golintui/pkg/golangcilint/config"
-
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/editor"
+	"github.com/nakabonne/golintui/pkg/git"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
+	"github.com/nakabonne/golintui/pkg/golangcilint/config"
 	"github.com/nakabonne/golintui/pkg/gui/item"
 )
 
@@ -26,6 +26,7 @@ type Gui struct {
 	lintersItem     *item.Linters
 	sourceFilesItem *item.SourceFiles
 	resultsItem     *item.Results
+	commitsItem     *item.Commits
 	//infoItem        *item.Info
 	naviItem *item.Navi
 
@@ -34,18 +35,25 @@ type Gui struct {
 	logger *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) (*Gui, error) {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, gitrunner *git.Runner, command *editor.Editor) *Gui {
 	linters := runner.ListLinters()
+	// TODO: Make limit changeable.
+	commits, err := gitrunner.ListCommits(20)
+	if err != nil {
+		logger.Error(err.Error())
+		commits = []*git.Commit{}
+	}
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(linters),
 		sourceFilesItem: item.NewSourceFiles(logger, "."),
 		resultsItem:     item.NewResults(logger),
+		commitsItem:     item.NewCommits(commits),
 		naviItem:        item.NewNavi(),
 		runner:          runner,
 		logger:          logger,
 		editor:          command,
-	}, nil
+	}
 }
 
 func (g *Gui) Run() error {
@@ -61,21 +69,23 @@ func (g *Gui) Run() error {
 // initGrid sets a grid based layout as a root primitive for the application.
 func (g *Gui) initGrid() {
 	grid := tview.NewGrid().
-		SetRows(0, 1).
+		SetRows(0, 10, 1).
 		SetColumns(30, 30, 0, 0).
 		SetBorders(true)
 
 	// Layout for screens wider than 100 cells.
 	grid.AddItem(g.lintersItem, 0, 0, 1, 1, 0, 100, true).
 		AddItem(g.sourceFilesItem, 0, 1, 1, 1, 0, 100, false).
-		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 100, false).
-		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
+		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 100, false).
+		AddItem(g.commitsItem, 1, 0, 1, 2, 0, 100, false).
+		AddItem(g.naviItem, 2, 0, 1, 4, 0, 0, false)
 
 	// Layout for screens narrower than 100 cells.
 	grid.AddItem(g.lintersItem, 0, 0, 1, 1, 0, 0, true).
 		AddItem(g.sourceFilesItem, 0, 1, 1, 1, 0, 0, false).
-		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 0, false).
-		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
+		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 0, false).
+		AddItem(g.commitsItem, 1, 0, 1, 2, 0, 0, false).
+		AddItem(g.naviItem, 2, 0, 1, 4, 0, 0, false)
 
 	g.naviItem.Update(g.lintersItem)
 
@@ -90,6 +100,8 @@ func (g *Gui) nextPanel() {
 	case *item.Linters:
 		g.switchPanel(g.sourceFilesItem)
 	case *item.SourceFiles:
+		g.switchPanel(g.commitsItem)
+	case *item.Commits:
 		g.switchPanel(g.resultsItem)
 	case *item.Results:
 		g.switchPanel(g.lintersItem)
@@ -102,8 +114,10 @@ func (g *Gui) prevPanel() {
 		g.switchPanel(g.resultsItem)
 	case *item.SourceFiles:
 		g.switchPanel(g.lintersItem)
-	case *item.Results:
+	case *item.Commits:
 		g.switchPanel(g.sourceFilesItem)
+	case *item.Results:
+		g.switchPanel(g.commitsItem)
 	}
 }
 
@@ -179,6 +193,14 @@ func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 		return
 	}
 	node.SetColor(item.DefaultLinterColor)
+}
+
+func (g *Gui) registerRevision(node *tview.TreeNode, rev string) {
+	g.runner.NewFromRev = rev
+}
+
+func (g *Gui) unregisterRevision(node *tview.TreeNode) {
+	g.runner.NewFromRev = ""
 }
 
 // openFile temporarily suspends this application and open file with the editor as a sub process.

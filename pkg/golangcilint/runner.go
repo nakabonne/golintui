@@ -21,6 +21,8 @@ type Runner struct {
 	// An arg can be a file name, a workingDir, and in addition,
 	// `...` to analyze them recursively.
 	Args []string
+	// Show only new issues created after git revision REV
+	NewFromRev string
 
 	// Specifies the working directory of golangci-lint
 	workingDir string
@@ -124,6 +126,10 @@ func (r *Runner) ArgsString() string {
 func (r *Runner) run(targets []string) ([]byte, error) {
 	args := []string{"run", "--out-format=json", "--issues-exit-code=0"}
 
+	// Specify revision if there is.
+	if r.NewFromRev != "" {
+		args = append(args, fmt.Sprintf("--new-from-rev=%s", r.NewFromRev))
+	}
 	// Specify enabled linters
 	linters := []string{}
 	for _, l := range r.cfg.Linters {
