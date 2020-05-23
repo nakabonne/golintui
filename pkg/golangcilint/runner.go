@@ -126,6 +126,10 @@ func (r *Runner) ArgsString() string {
 func (r *Runner) run(targets []string) ([]byte, error) {
 	args := []string{"run", "--out-format=json", "--issues-exit-code=0"}
 
+	// Specify revision if there is.
+	if r.NewFromRev != "" {
+		args = append(args, fmt.Sprintf("--new-from-rev=%s", r.NewFromRev))
+	}
 	// Specify enabled linters
 	linters := []string{}
 	for _, l := range r.cfg.Linters {
