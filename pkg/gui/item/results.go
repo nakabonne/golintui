@@ -81,7 +81,7 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 		child := tview.NewTreeNode("reported by " + linter).
 			SetReference(linter).
 			SetSelectable(true).
-			SetColor(tcell.ColorAqua)
+			SetColor(tcell.ColorWhite)
 		node.AddChild(child)
 
 		// Add issues to reporting linters as children.
@@ -90,7 +90,8 @@ func (r *Results) addChildren(node *tview.TreeNode, issues []golangcilint.Issue)
 			grandchild := tview.NewTreeNode(i.Message()).
 				SetReference(i).
 				SetSelectable(true).
-				SetColor(tcell.ColorWhite)
+				SetColor(tcell.ColorRed)
+			grandchild.AddChild(tview.NewTreeNode(i.SourceLine()).SetSelectable(false).SetColor(tcell.ColorSilver))
 			child.AddChild(grandchild)
 		}
 		child.SetExpanded(false)
