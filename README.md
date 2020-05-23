@@ -69,7 +69,7 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
   <kbd>space</kbd>: toggle enabled
 </pre>
 
-##### Note that for users who specify `disable-all` in the config file for golangci-lint, it is impossible to disable linters that are enabled in it.
+Note that for users who specify `disable-all` in the config file for golangci-lint, it is impossible to disable linters that are enabled in it.
 
 **Source File Panel**
 
@@ -77,6 +77,14 @@ Just press <kbd>r</kbd>, then results from the linters should be shown.
   <kbd>space</kbd>: toggle selected
   <kbd>o</kbd>: expand directory
 </pre>
+
+**Commits Panel**
+
+<pre>
+  <kbd>space</kbd>: toggle selected
+</pre>
+
+It shows only new issues created after the commit you selected. Internally it just gives it on to `--new-from-rev`.
 
 **Results Panel**
 
