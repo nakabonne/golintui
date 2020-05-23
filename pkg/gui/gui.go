@@ -35,10 +35,14 @@ type Gui struct {
 	logger *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner, gitrunner *git.Runner, command *editor.Editor) (*Gui, error) {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, gitrunner *git.Runner, command *editor.Editor) *Gui {
 	linters := runner.ListLinters()
 	// TODO: Make limit changeable.
-	commits := gitrunner.ListCommits(20)
+	commits, err := gitrunner.ListCommits(20)
+	if err != nil {
+		logger.Error(err.Error())
+		commits = []*git.Commit{}
+	}
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(linters),
@@ -49,7 +53,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner, gitrunner *git.Runne
 		runner:          runner,
 		logger:          logger,
 		editor:          command,
-	}, nil
+	}
 }
 
 func (g *Gui) Run() error {

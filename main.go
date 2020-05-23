@@ -69,14 +69,10 @@ func (c *cli) run() int {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
 	}
-	gitrunner := git.NewRunner("")
+	gitrunner := git.NewRunner("", logger)
 	editor := editor.NewEditor(conf.OpenCommandEnv, logger)
-	g, err := gui.New(logger, runner, gitrunner, editor)
-	if err != nil {
-		fmt.Fprintln(c.stderr, err.Error())
-		return 1
-	}
 
+	g := gui.New(logger, runner, gitrunner, editor)
 	if err := g.Run(); err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
