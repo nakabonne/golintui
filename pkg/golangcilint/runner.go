@@ -21,6 +21,8 @@ type Runner struct {
 	// An arg can be a file name, a workingDir, and in addition,
 	// `...` to analyze them recursively.
 	Args []string
+	// Show only new issues created after git revision REV
+	NewFromRev string
 
 	// Specifies the working directory of golangci-lint
 	workingDir string

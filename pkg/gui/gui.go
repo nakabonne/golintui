@@ -100,6 +100,8 @@ func (g *Gui) nextPanel() {
 	case *item.Linters:
 		g.switchPanel(g.sourceFilesItem)
 	case *item.SourceFiles:
+		g.switchPanel(g.commitsItem)
+	case *item.Commits:
 		g.switchPanel(g.resultsItem)
 	case *item.Results:
 		g.switchPanel(g.lintersItem)
@@ -112,8 +114,10 @@ func (g *Gui) prevPanel() {
 		g.switchPanel(g.resultsItem)
 	case *item.SourceFiles:
 		g.switchPanel(g.lintersItem)
-	case *item.Results:
+	case *item.Commits:
 		g.switchPanel(g.sourceFilesItem)
+	case *item.Results:
+		g.switchPanel(g.commitsItem)
 	}
 }
 
@@ -189,6 +193,14 @@ func (g *Gui) disableLinter(node *tview.TreeNode, linter *config.Linter) {
 		return
 	}
 	node.SetColor(item.DefaultLinterColor)
+}
+
+func (g *Gui) registerRevision(node *tview.TreeNode, rev string) {
+	g.runner.NewFromRev = rev
+}
+
+func (g *Gui) unregisterRevision(node *tview.TreeNode) {
+	g.runner.NewFromRev = ""
 }
 
 // openFile temporarily suspends this application and open file with the editor as a sub process.

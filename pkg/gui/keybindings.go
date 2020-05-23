@@ -9,6 +9,7 @@ import (
 func (g *Gui) setKeybind() {
 	g.lintersItem.SetKeybinds(g.grobalKeybind, g.enableLinter, g.disableLinter)
 	g.sourceFilesItem.SetKeybinds(g.grobalKeybind, g.registerPath, g.unregisterPath)
+	g.commitsItem.SetKeybinds(g.grobalKeybind, g.registerRevision, g.unregisterRevision)
 	g.resultsItem.SetKeybinds(g.grobalKeybind, g.openFile)
 }
 
