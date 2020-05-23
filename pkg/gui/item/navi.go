@@ -22,6 +22,7 @@ const (
 	globalNavi      = "[aqua]q[white]: quit, [aqua]r[white]: run, [aqua]j[white]: move down, [aqua]k[white]: move up, [aqua]l[white]: next panel, [aqua]h[white]: previous panel"
 	lintersNavi     = "[aqua]space[white]: toggle enabled"
 	sourceFilesNavi = "[aqua]space[white]: toggle selected, [aqua]o[white]: expand directory"
+	commitsNavi     = "[aqua]space[white]: toggle selected"
 	resultsNavi     = "[aqua]o[white]: open file"
 )
 
@@ -31,6 +32,8 @@ func (n *Navi) Update(p tview.Primitive) {
 		n.SetText(fmt.Sprintf("%s, %s", globalNavi, lintersNavi))
 	case *SourceFiles:
 		n.SetText(fmt.Sprintf("%s, %s", globalNavi, sourceFilesNavi))
+	case *Commits:
+		n.SetText(fmt.Sprintf("%s, %s", globalNavi, commitsNavi))
 	case *Results:
 		n.SetText(fmt.Sprintf("%s, %s", globalNavi, resultsNavi))
 	}
