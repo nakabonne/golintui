@@ -10,6 +10,7 @@ import (
 
 	"github.com/nakabonne/golintui/pkg/config"
 	"github.com/nakabonne/golintui/pkg/editor"
+	"github.com/nakabonne/golintui/pkg/git"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
 	"github.com/nakabonne/golintui/pkg/gui"
 	"github.com/nakabonne/golintui/pkg/logger"
@@ -68,8 +69,9 @@ func (c *cli) run() int {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1
 	}
+	gitrunner := git.NewRunner("")
 	editor := editor.NewEditor(conf.OpenCommandEnv, logger)
-	g, err := gui.New(logger, runner, editor)
+	g, err := gui.New(logger, runner, gitrunner, editor)
 	if err != nil {
 		fmt.Fprintln(c.stderr, err.Error())
 		return 1

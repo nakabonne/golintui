@@ -4,12 +4,12 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/sirupsen/logrus"
 
-	"github.com/nakabonne/golintui/pkg/golangcilint/config"
-
 	"github.com/rivo/tview"
 
 	"github.com/nakabonne/golintui/pkg/editor"
+	"github.com/nakabonne/golintui/pkg/git"
 	"github.com/nakabonne/golintui/pkg/golangcilint"
+	"github.com/nakabonne/golintui/pkg/golangcilint/config"
 	"github.com/nakabonne/golintui/pkg/gui/item"
 )
 
@@ -35,14 +35,16 @@ type Gui struct {
 	logger *logrus.Entry
 }
 
-func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Editor) (*Gui, error) {
+func New(logger *logrus.Entry, runner *golangcilint.Runner, gitrunner *git.Runner, command *editor.Editor) (*Gui, error) {
 	linters := runner.ListLinters()
+	// TODO: Make limit changeable.
+	commits := gitrunner.ListCommits(20)
 	return &Gui{
 		application:     tview.NewApplication(),
 		lintersItem:     item.NewLinters(linters),
 		sourceFilesItem: item.NewSourceFiles(logger, "."),
 		resultsItem:     item.NewResults(logger),
-		commitsItem:     item.NewCommits(),
+		commitsItem:     item.NewCommits(commits),
 		naviItem:        item.NewNavi(),
 		runner:          runner,
 		logger:          logger,
