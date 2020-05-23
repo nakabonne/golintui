@@ -26,6 +26,7 @@ type Gui struct {
 	lintersItem     *item.Linters
 	sourceFilesItem *item.SourceFiles
 	resultsItem     *item.Results
+	commitsItem     *item.Commits
 	//infoItem        *item.Info
 	naviItem *item.Navi
 
@@ -41,6 +42,7 @@ func New(logger *logrus.Entry, runner *golangcilint.Runner, command *editor.Edit
 		lintersItem:     item.NewLinters(linters),
 		sourceFilesItem: item.NewSourceFiles(logger, "."),
 		resultsItem:     item.NewResults(logger),
+		commitsItem:     item.NewCommits(),
 		naviItem:        item.NewNavi(),
 		runner:          runner,
 		logger:          logger,
@@ -61,21 +63,23 @@ func (g *Gui) Run() error {
 // initGrid sets a grid based layout as a root primitive for the application.
 func (g *Gui) initGrid() {
 	grid := tview.NewGrid().
-		SetRows(0, 1).
+		SetRows(0, 10, 1).
 		SetColumns(30, 30, 0, 0).
 		SetBorders(true)
 
 	// Layout for screens wider than 100 cells.
 	grid.AddItem(g.lintersItem, 0, 0, 1, 1, 0, 100, true).
 		AddItem(g.sourceFilesItem, 0, 1, 1, 1, 0, 100, false).
-		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 100, false).
-		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
+		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 100, false).
+		AddItem(g.commitsItem, 1, 0, 1, 2, 0, 100, false).
+		AddItem(g.naviItem, 2, 0, 1, 4, 0, 0, false)
 
 	// Layout for screens narrower than 100 cells.
 	grid.AddItem(g.lintersItem, 0, 0, 1, 1, 0, 0, true).
 		AddItem(g.sourceFilesItem, 0, 1, 1, 1, 0, 0, false).
-		AddItem(g.resultsItem, 0, 2, 1, 2, 0, 0, false).
-		AddItem(g.naviItem, 1, 0, 1, 4, 0, 0, false)
+		AddItem(g.resultsItem, 0, 2, 2, 2, 0, 0, false).
+		AddItem(g.commitsItem, 1, 0, 1, 2, 0, 0, false).
+		AddItem(g.naviItem, 2, 0, 1, 4, 0, 0, false)
 
 	g.naviItem.Update(g.lintersItem)
 
