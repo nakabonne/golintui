@@ -66,7 +66,7 @@ func (c *cli) run() int {
 	logger := logger.NewLogger(conf, nil)
 	runner, err := golangcilint.NewRunner(conf.Executable, []string{}, logger)
 	if err != nil {
-		fmt.Fprintln(c.stderr, err.Error())
+		fmt.Fprintf(c.stderr, "failed to run golangci-lint: %s", err.Error())
 		return 1
 	}
 	gitrunner := git.NewRunner("", logger)
@@ -74,7 +74,7 @@ func (c *cli) run() int {
 
 	g := gui.New(logger, runner, gitrunner, editor)
 	if err := g.Run(); err != nil {
-		fmt.Fprintln(c.stderr, err.Error())
+		fmt.Fprintf(c.stderr, "failed to start application: %s", err.Error())
 		return 1
 	}
 
