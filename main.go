@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -47,7 +48,7 @@ func main() {
 	flagSet.StringVarP(&c.executable, "executable", "e", "", "absolute path to the golangci-lint executable")
 	flagSet.Usage = usage
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		if err != flag.ErrHelp {
+		if !errors.Is(err, flag.ErrHelp) {
 			fmt.Fprintln(c.stderr, err)
 		}
 		return
