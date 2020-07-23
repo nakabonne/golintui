@@ -20,16 +20,22 @@
 
 For Mac OS or Linux, you can download a binary release [here](https://github.com/nakabonne/golintui/releases).
 
-**Homebrew**
+**With Homebrew**
 
-```
+```bash
 brew install nakabonne/golintui/golintui
 ```
 
-**Source**
+**With Go**
 
 ```bash
 go get github.com/nakabonne/golintui
+```
+
+**With Docker**
+
+```bash
+docker run --rm -i -t -v $(pwd):/app -w /app nakabonne/golintui:latest /bin/bash
 ```
 
 ## Usage
