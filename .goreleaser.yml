@@ -16,16 +16,20 @@ builds:
   env:
   - CGO_ENABLED=0
   ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+
 archives:
 - replacements:
     darwin: Darwin
     linux: Linux
     386: 32-bit
     amd64: x86_64
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   filters:
     exclude:
@@ -37,3 +41,12 @@ brews:
       name: homebrew-golintui
     homepage: 'https://github.com/nakabonne/golintui'
     description: 'A simple terminal UI for golangci-lint'
+
+dockers:
+  - dockerfile: Dockerfile
+    binaries:
+      - golintui
+    image_templates:
+      - "nakabonne/golintui:latest"
+      - "nakabonne/golintui:{{ .Tag }}"
+      - "nakabonne/golintui:v{{ .Major }}.{{ .Minor }}"
