@@ -1,6 +1,10 @@
-FROM golang:1.14
+FROM golangci/golangci-lint:latest
 
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.30.0
+RUN \
+  apt-get update && \
+  apt-get install -y vim
+
+ENV GOLINTUI_OPEN_COMMAND=vim
 
 COPY golintui /usr/bin/
 CMD ["golintui"]
