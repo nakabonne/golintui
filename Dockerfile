@@ -1,8 +1,8 @@
-FROM golangci/golangci-lint:latest
+FROM golangci/golangci-lint:latest-alpine
 
 RUN \
-  apt-get update && \
-  apt-get install -y vim
+  apk update && \
+  apk add vim
 
 ENV GOLINTUI_OPEN_COMMAND=vim
 

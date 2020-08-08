@@ -35,7 +35,7 @@ go get github.com/nakabonne/golintui
 **With Docker**
 
 ```bash
-docker run --rm -i -t -v $(pwd):/app -w /app nakabonne/golintui:latest /bin/bash
+docker run --rm -i -t -v $(pwd):/app -w /app nakabonne/golintui:latest golintui
 ```
 
 ## Usage
