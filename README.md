@@ -116,3 +116,7 @@ export GOLINTUI_OPEN_COMMAND="code -r"
 - VSCode
 
 Please let me know how to open a file at a specific line if the editor you're used to is missing.
+
+## License Scan
+
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B19582%2Fssh%3A%2F%2Fgit%40github.com%2Fnakabonne%2Fgolintui.git.svg?type=large)](https://app.fossa.com/projects/custom%2B19582%2Fssh%3A%2F%2Fgit%40github.com%2Fnakabonne%2Fgolintui.git?ref=badge_large)
