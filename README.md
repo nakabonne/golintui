@@ -32,6 +32,8 @@ brew install nakabonne/golintui/golintui
 go get github.com/nakabonne/golintui
 ```
 
+Note that `go get` downloads a bunch of dependencies on golangci-lint so can take a while to fully install.
+
 **With Docker**
 
 ```bash
